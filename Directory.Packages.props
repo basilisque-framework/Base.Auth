@@ -1,0 +1,86 @@
+<Project>
+  <!-- enable central package management -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
+    <CentralPackageFloatingVersionsEnabled>false</CentralPackageFloatingVersionsEnabled>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <!--<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>-->
+  </PropertyGroup>
+
+  <!-- define NuGet package versions -->
+  <ItemGroup>
+    <!-- build -->
+    <PackageVersion Include="Basilisque.CommonFrameworkBuild" Version="2.0.0-Preview00012" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.8.2" />
+
+    <!-- server -->
+    <PackageVersion Include="Basilisque.DependencyInjection" Version="1.1.0-Preview00022" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.19.2" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.13" />
+    <!--<PackageVersion Include="Basilisque.Base.Service" Version="1.1.0-CI00002" />-->
+
+    <!-- client -->
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.19.2" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.2" />
+    <PackageVersion Include="OpenIddict.Client.SystemNetHttp" Version="7.7.2" />
+    <PackageVersion Include="OpenIddict.Server.AspNetCore" Version="7.7.2" />
+    <PackageVersion Include="OpenIddict.Validation.AspNetCore" Version="7.7.2" />
+    <PackageVersion Include="OpenIddict.Validation.ServerIntegration" Version="7.7.2" />
+    <PackageVersion Include="OpenIddict.Validation.SystemNetHttp" Version="7.7.2" />
+    <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="7.7.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.13" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.13" />
+
+    <!-- EF Core -->
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.Relational" Version="1.0.0-Preview00044" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SqlServer" Version="1.0.0-Preview00044" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SQLite" Version="1.0.0-Preview00044" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.PostgreSQL" Version="1.0.0-Preview00044" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.13" />
+
+    <!-- testing -->
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.5.1" />
+    <PackageVersion Include="NSubstitute" Version="6.2.0" />
+    <PackageVersion Include="TUnit" Version="1.76.0" />
+  </ItemGroup>
+
+  <!-- import packages for all projects -->
+  <ItemGroup>
+    <PackageReference Include="Basilisque.CommonFrameworkBuild">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="GitVersion.MsBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+
+  <!-- import packages for all non-test projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) != 'true'">
+    <PackageReference Include="Basilisque.DependencyInjection" />
+  </ItemGroup>
+
+  <!-- import packages for all *.Tests projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) == 'true'">
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+</Project>

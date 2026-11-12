@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Basilisque.Base.Auth.DataAccess.EntityFramework.Relational</PackageId>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Base.Auth.Abstractions.csproj" />
+    <ProjectReference Include="..\Server\Base.Auth.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Basilisque.DataAccess.EntityFramework.Relational" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+
+    <!--<PackageReference Include="Basilisque.DataAccess.EntityFramework.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>-->
+    </ItemGroup>
+</Project>

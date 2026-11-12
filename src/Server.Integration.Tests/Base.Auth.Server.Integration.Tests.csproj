@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Client/Base.Auth.Client.csproj" />
+    <ProjectReference Include="../DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Server/Base.Auth.Server.csproj" />
+  </ItemGroup>
+</Project>

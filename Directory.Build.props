@@ -1,0 +1,57 @@
+<Project>
+  <!-- general build properties -->
+  <PropertyGroup>
+    <BAS_Auth_TargetFramework>net10.0</BAS_Auth_TargetFramework>
+    <LangVersion Condition="'$(TargetFramework)' == 'net48'">latest</LangVersion>
+
+    <!-- Run code-style analyzers; EditorConfig selects which rules are warnings. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <WarningsAsErrors>$(WarningsAsErrors);Nullable</WarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(DesignTimeBuild)' != 'true'">true</TreatWarningsAsErrors>
+
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Libraries are packed; executable hosts opt into publishing in their project files. -->
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+  <!-- project description -->
+  <ItemGroup>
+    <Using Include="System.Threading" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <Description>Provides OpenIddict-based machine-to-machine authentication and extensible product identity infrastructure.</Description>
+    <BAS_CB_Copyright_BeginYear>2026</BAS_CB_Copyright_BeginYear>
+    <PackageProjectUrl>https://github.com/basilisque-framework/Base.Auth</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/basilisque-framework/Base.Auth.git</RepositoryUrl>
+    <PackageTags>Basilisque Authentication Authorization M2M ClientCredentials</PackageTags>
+    <PackageReadmeFile>docs\README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <!-- pack additional file in NuGet package -->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="docs/README.md" />
+  </ItemGroup>
+
+  <!-- settings for all *.Tests projects -->
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) == 'true'">
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <!-- *.Tests projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) == 'true'">
+    <Using Include="NSubstitute" />
+  </ItemGroup>
+
+  <!--
+  If a 'packages-local' folder exists in the same directory as this file, add it as a package source.
+  This enables local package feeds for development and testing.
+  -->
+  <PropertyGroup Condition="Exists('$(MSBuildThisFileDirectory)packages-local')">
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);$(MSBuildThisFileDirectory)packages-local</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+</Project>

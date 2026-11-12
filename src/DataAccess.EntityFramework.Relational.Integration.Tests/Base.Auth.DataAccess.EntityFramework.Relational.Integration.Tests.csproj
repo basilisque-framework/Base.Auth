@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj" />
+    <ProjectReference Include="../DataAccess.EntityFramework.PostgreSQL/Base.Auth.DataAccess.EntityFramework.PostgreSQL.csproj" />
+    <ProjectReference Include="../DataAccess.EntityFramework.SqlServer/Base.Auth.DataAccess.EntityFramework.SqlServer.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../DataAccess.EntityFramework.Relational/Base.Auth.DataAccess.EntityFramework.Relational.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL</PackageId>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../DataAccess.EntityFramework.Relational/Base.Auth.DataAccess.EntityFramework.Relational.csproj" />
+    <PackageReference Include="Basilisque.DataAccess.EntityFramework.PostgreSQL" />
+  </ItemGroup>
+</Project>

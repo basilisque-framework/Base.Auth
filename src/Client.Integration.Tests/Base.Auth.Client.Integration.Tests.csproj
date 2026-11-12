@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../samples/MachineClient/Base.Auth.MachineClient.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../samples/MachineService/Base.Auth.MachineService.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../tools/Client.Credentials.DataProtection.Compatibility/Base.Auth.Client.Credentials.DataProtection.Compatibility.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <Target Name="BuildFrameworkCompatibilityPrograms" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <MSBuild Projects="../../samples/MachineClient/Base.Auth.MachineClient.csproj;../../tools/Client.Credentials.DataProtection.Compatibility/Base.Auth.Client.Credentials.DataProtection.Compatibility.csproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=net48" />
+  </Target>
+</Project>

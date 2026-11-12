@@ -1,0 +1,17 @@
+<!-- Solution targets -->
+<Project>
+  <!-- set internals visible to test projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) != 'true'">
+    <!-- set internals visible to corresponding test project -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Unit.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Integration.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <!-- set internals visible to castle proxy libraries (NSubstitute) -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>

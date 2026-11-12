@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "projects": [
+      "src/Abstractions.Unit.Tests/Base.Auth.Abstractions.Unit.Tests.csproj",
+      "src/Client.Unit.Tests/Base.Auth.Client.Unit.Tests.csproj",
+      "src/Server.Unit.Tests/Base.Auth.Server.Unit.Tests.csproj"
+    ],
+    "path": "Basilisque.Base.Auth.slnx"
+  }
+}
