@@ -1,0 +1,23 @@
+using Basilisque.Base.Auth.Client.Credentials;
+
+namespace Basilisque.Base.Auth.Client;
+
+/// <summary>Manages outbound machine client registrations in a running service.</summary>
+public interface IRuntimeMachineClientRegistry
+{
+    /// <summary>Adds a connection or replaces its settings, signing credential, and token cache.</summary>
+    /// <param name="registrationName">The local name used to request an access token.</param>
+    /// <param name="configure">Sets the issuer, client ID, scopes, and token cache settings.</param>
+    /// <param name="createCredential">
+    /// Creates a fresh signing credential owned by the registry. A custom crypto provider must release
+    /// signing operations before the underlying key is disposed.
+    /// </param>
+    /// <remarks>Token requests already using the previous registration can finish with its settings.</remarks>
+    void RegisterOrUpdate(string registrationName, Action<MachineClientOptions> configure,
+        Func<ClientSigningCredential> createCredential);
+
+    /// <summary>Removes a runtime registration so subsequent calls cannot acquire tokens for it.</summary>
+    /// <param name="registrationName">The local name of the connection to remove.</param>
+    /// <returns>Whether the runtime registration existed.</returns>
+    bool Remove(string registrationName);
+}

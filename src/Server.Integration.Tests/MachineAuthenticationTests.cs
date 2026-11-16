@@ -1,4 +1,5 @@
 using Basilisque.Base.Auth.ClientAuth;
+using Basilisque.Base.Auth.Client.Credentials;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,39 @@ namespace Basilisque.Base.Auth.Server.Integration.Tests;
 [Category("Integration")]
 public sealed class MachineAuthenticationTests
 {
+    /// <summary>Obtains a token using a generated public ECDSA registration and the matching private key.</summary>
+    [Test]
+    [Arguments(256, "ES256")]
+    [Arguments(384, "ES384")]
+    [Arguments(521, "ES512")]
+    public async Task GetAccessTokenAsync_ShouldIssueToken_WithEcdsaCredential(int keySize, string algorithm)
+    {
+        // Arrange
+        const string ClientId = "ecdsa-client";
+        const string KeyId = "ecdsa-key";
+        await using var environment = await ProtocolTestEnvironment.CreateAsync();
+        using var key = ECDsa.Create(keySize switch
+        {
+            256 => ECCurve.NamedCurves.nistP256,
+            384 => ECCurve.NamedCurves.nistP384,
+            521 => ECCurve.NamedCurves.nistP521,
+            _ => throw new ArgumentOutOfRangeException(nameof(keySize))
+        });
+        using var credential = ClientSigningCredential.FromEcdsa(key, KeyId);
+        var keys = new JsonWebKeySet();
+        var publicKey = credential.ExportPublicJwk();
+        if (publicKey.HasPrivateKey)
+            throw new InvalidOperationException("The exported JWK contains private key material.");
+        keys.Keys.Add(publicKey);
+        await environment.RegisterAsync(ClientId, keys);
+        await using var client = environment.CreateClient(ClientId, () => ClientSigningCredential.FromEcdsa(key, KeyId));
+        // Act
+        var token = await client.GetRequiredService<IAccessTokenProvider>().GetAccessTokenAsync("test");
+        // Assert
+        await Assert.That(string.IsNullOrWhiteSpace(token.Value)).IsFalse();
+        await Assert.That(keys.Keys.Single().Alg).IsEqualTo(algorithm);
+    }
+
     /// <summary>Obtains independent server-issued tokens when the calling application manages caching.</summary>
     [Test]
     public async Task GetAccessTokenAsync_ShouldIssueFreshToken_WhenCachingDisabled()

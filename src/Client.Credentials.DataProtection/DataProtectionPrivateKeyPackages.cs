@@ -6,7 +6,7 @@ using System.Text;
 namespace Basilisque.Base.Auth.Client.Credentials.DataProtection;
 
 /// <summary>
-/// Uses ASP.NET Core Data Protection without embedding any encryption secret in Base.Auth.
+/// Uses ASP.NET Core Data Protection to protect and unprotect private-key packages for client credentials.
 /// </summary>
 /// <remarks>The host must persist and protect the Data Protection key ring and arrange cluster access.</remarks>
 public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtector

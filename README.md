@@ -19,6 +19,7 @@
 
 A modular authentication library based on OpenIddict. It provides machine-to-machine authentication using
 Client Credentials and `private_key_jwt`, product service identities, and API token validation.
+It also supports local user sign-in with ASP.NET Core Identity and Authorization Code with PKCE.
 
 [![NuGet Basilisque.Base.Auth.Client](https://img.shields.io/badge/NuGet_Basilisque.Base.Auth.Client-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.Base.Auth.Client)\
 [![NuGet Basilisque.Base.Auth.Server](https://img.shields.io/badge/NuGet_Basilisque.Base.Auth.Server-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.Base.Auth.Server)\
@@ -60,18 +61,12 @@ dotnet test --solution Basilisque.Base.Auth.slnx --results-directory artifacts/t
 See the [testing guide](docs/testing.md) for solution filters, Visual Studio, and Windows
 compatibility requirements.
 
-## NuGet packages
-
-NuGet builds use Portable PDBs and Source Link and produce `.snupkg` symbol packages.
-Generated and other untracked sources are embedded in the PDBs. Publish matching symbol
-packages alongside release packages so consumers can debug the corresponding sources.
-Release packages should be built from a clean, committed checkout.
-
 ## Documentation
 
 The [documentation index](docs/README.md) links to the integration and architecture guides.
 Start with the [M2M guide](docs/m2m.md) for credentials, database selection, and client
 registration.
+See [local user authentication](docs/local-users.md) for account provisioning and browser login.
 
 ## License
 

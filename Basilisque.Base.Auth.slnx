@@ -1,28 +1,28 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/src/" />
   <Folder Name="/src/Abstractions/">
     <Project Path="src/Abstractions.Unit.Tests/Base.Auth.Abstractions.Unit.Tests.csproj" />
     <Project Path="src/Abstractions/Base.Auth.Abstractions.csproj" />
   </Folder>
   <Folder Name="/src/Client/">
+    <Project Path="src/Client.Credentials.DataProtection.Integration.Tests/Base.Auth.Client.Credentials.DataProtection.Integration.Tests.csproj" />
     <Project Path="src/Client.Credentials.DataProtection/Base.Auth.Client.Credentials.DataProtection.csproj" />
+    <Project Path="src/Client.Integration.Tests/Base.Auth.Client.Integration.Tests.csproj" />
     <Project Path="src/Client.Unit.Tests/Base.Auth.Client.Unit.Tests.csproj" />
     <Project Path="src/Client/Base.Auth.Client.csproj" />
-    <Project Path="src/Client.Credentials.DataProtection.Integration.Tests/Base.Auth.Client.Credentials.DataProtection.Integration.Tests.csproj" />
-    <Project Path="src/Client.Integration.Tests/Base.Auth.Client.Integration.Tests.csproj" />
   </Folder>
   <Folder Name="/src/DataAccess/">
-    <Project Path="src/DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj" />
     <Project Path="src/DataAccess.EntityFramework.PostgreSQL/Base.Auth.DataAccess.EntityFramework.PostgreSQL.csproj" />
     <Project Path="src/DataAccess.EntityFramework.Relational.Integration.Tests/Base.Auth.DataAccess.EntityFramework.Relational.Integration.Tests.csproj" />
     <Project Path="src/DataAccess.EntityFramework.Relational/Base.Auth.DataAccess.EntityFramework.Relational.csproj" />
+    <Project Path="src/DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj" />
     <Project Path="src/DataAccess.EntityFramework.SqlServer.Integration.Tests/Base.Auth.DataAccess.EntityFramework.SqlServer.Integration.Tests.csproj" />
     <Project Path="src/DataAccess.EntityFramework.SqlServer/Base.Auth.DataAccess.EntityFramework.SqlServer.csproj" />
   </Folder>
   <Folder Name="/src/Server/">
     <Project Path="src/Server.Integration.Tests/Base.Auth.Server.Integration.Tests.csproj" />
-    <Project Path="src/Server/Base.Auth.Server.csproj" />
     <Project Path="src/Server.Unit.Tests/Base.Auth.Server.Unit.Tests.csproj" />
+    <Project Path="src/Server/Base.Auth.Server.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
@@ -31,8 +31,8 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/samples/">
-    <Project Path="samples/MachineService/Base.Auth.MachineService.csproj" />
     <Project Path="samples/MachineClient/Base.Auth.MachineClient.csproj" />
+    <Project Path="samples/MachineService/Base.Auth.MachineService.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/Client.Credentials.DataProtection.Compatibility/Base.Auth.Client.Credentials.DataProtection.Compatibility.csproj" />

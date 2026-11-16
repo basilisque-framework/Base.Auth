@@ -3,30 +3,33 @@ using System;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
-partial class AuthDbContextModelSnapshot : ModelSnapshot
+[Migration("20261102142541_InitialOpenIddict")]
+partial class InitialOpenIddict
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder
             .HasAnnotation("ProductVersion", "10.0.13")
-            .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
         modelBuilder.Entity("Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model.AssertionReplayEntry", b =>
             {
                 b.Property<string>("Id")
                     .HasMaxLength(64)
-                    .HasColumnType("nvarchar(64)");
+                    .HasColumnType("character varying(64)");
 
                 b.Property<long>("ExpiresAtUtcTicks")
                     .HasColumnType("bigint");
@@ -42,64 +45,63 @@ partial class AuthDbContextModelSnapshot : ModelSnapshot
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ApplicationType")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("ClientId")
                     .HasMaxLength(100)
-                    .HasColumnType("nvarchar(100)");
+                    .HasColumnType("character varying(100)");
 
                 b.Property<string>("ClientSecret")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ClientType")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("ConsentType")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("JsonWebKeySet")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Permissions")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("PostLogoutRedirectUris")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("RedirectUris")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Requirements")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Settings")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.HasKey("Id");
 
                 b.HasIndex("ClientId")
-                    .IsUnique()
-                    .HasFilter("[ClientId] IS NOT NULL");
+                    .IsUnique();
 
                 b.ToTable("Auth_Applications", (string)null);
             });
@@ -108,36 +110,36 @@ partial class AuthDbContextModelSnapshot : ModelSnapshot
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("datetime2");
+                    .HasColumnType("timestamp with time zone");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Scopes")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("nvarchar(400)");
+                    .HasColumnType("character varying(400)");
 
                 b.Property<string>("Type")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.HasKey("Id");
 
@@ -150,40 +152,39 @@ partial class AuthDbContextModelSnapshot : ModelSnapshot
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("Description")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Descriptions")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Name")
                     .HasMaxLength(200)
-                    .HasColumnType("nvarchar(200)");
+                    .HasColumnType("character varying(200)");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Resources")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.HasKey("Id");
 
                 b.HasIndex("Name")
-                    .IsUnique()
-                    .HasFilter("[Name] IS NOT NULL");
+                    .IsUnique();
 
                 b.ToTable("Auth_Scopes", (string)null);
             });
@@ -192,57 +193,56 @@ partial class AuthDbContextModelSnapshot : ModelSnapshot
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("AuthorizationId")
-                    .HasColumnType("nvarchar(450)");
+                    .HasColumnType("text");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("datetime2");
+                    .HasColumnType("timestamp with time zone");
 
                 b.Property<DateTime?>("ExpirationDate")
-                    .HasColumnType("datetime2");
+                    .HasColumnType("timestamp with time zone");
 
                 b.Property<string>("Payload")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<DateTime?>("RedemptionDate")
-                    .HasColumnType("datetime2");
+                    .HasColumnType("timestamp with time zone");
 
                 b.Property<string>("ReferenceId")
                     .HasMaxLength(100)
-                    .HasColumnType("nvarchar(100)");
+                    .HasColumnType("character varying(100)");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
+                    .HasColumnType("character varying(50)");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("nvarchar(400)");
+                    .HasColumnType("character varying(400)");
 
                 b.Property<string>("Type")
                     .HasMaxLength(150)
-                    .HasColumnType("nvarchar(150)");
+                    .HasColumnType("character varying(150)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("AuthorizationId");
 
                 b.HasIndex("ReferenceId")
-                    .IsUnique()
-                    .HasFilter("[ReferenceId] IS NOT NULL");
+                    .IsUnique();
 
                 b.HasIndex("ApplicationId", "Status", "Subject", "Type");
 

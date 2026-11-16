@@ -1,5 +1,11 @@
 ﻿using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.Base.Auth.Server.ClientAuth;
+using Basilisque.DataAccess.EntityFramework.Base.Connection;
+using Basilisque.DataAccess.EntityFramework.Base.Data;
+using Basilisque.DataAccess.EntityFramework.Base.DependencyInjection;
+using Basilisque.DataAccess.EntityFramework.Base.Model;
+using Basilisque.DataAccess.EntityFramework.Relational.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,27 +17,72 @@ namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 /// </summary>
 public static class AuthPersistenceExtensions
 {
-    /// <summary>
-    /// Adds the Basilisque-backed relational stores. Register Basilisque provider services in the host.
-    /// </summary>
-    public static IServiceCollection AddBaseAuthRelationalPersistence(this IServiceCollection services)
+    internal const string MigrationsHistoryTable = "__BASAuthMigrationsHistory";
+
+    /// <param name="identity">The builder for local Identity accounts.</param>
+    extension(IdentityBuilder identity)
     {
-        services.AddDbContext<AuthDbContext>();
-        services.AddOpenIddict().AddCore(options =>
+        /// <summary>Uses the default relational store for local Identity accounts.</summary>
+        public IdentityBuilder AddBaseAuthRelationalUserStore()
         {
-            options.UseEntityFrameworkCore().UseDbContext<AuthDbContext>();
-        });
-        services.TryAddScoped<IClientAssertionReplayStore, EfClientAssertionReplayStore>();
-        return services;
+            var services = identity.Services;
+            services.Configure<IdentityOptions>(options => options.Stores.SchemaVersion = IdentitySchemaVersions.Version3);
+            services.AddDbContext<LocalIdentityDbContext>((services, options) =>
+            {
+                var provider = services.GetRequiredService<IDbProviderServiceProvider>();
+                var identityProvider = provider.GetRequiredService<ILocalIdentityProvider>();
+                var providerKey = identityProvider.ProviderKey;
+                var connection = provider.GetRequiredService<IConnectionStringBuilder>().GetConnectionString(nameof(AuthDbContext), providerKey);
+                var migrationAssembly = services.GetRequiredService<IMigrationAssemblyResolver>()
+                    .GetMigrationAssemblyName(typeof(LocalIdentityDbContext), providerKey)
+                    ?? throw new InvalidOperationException($"No local Identity migrations are registered for '{providerKey}'.");
+
+                identityProvider.Configure(options, connection, migrationAssembly, MigrationsHistoryTable);
+            });
+            services.TryAddEnumerable(ServiceDescriptor.Scoped<IDbInitializer, MigrationInitializer<LocalIdentityDbContext>>());
+            return identity.AddEntityFrameworkStores<LocalIdentityDbContext>();
+        }
     }
 
-    /// <summary>
-    /// Deletes expired replay markers. Run periodically using one scoped context per maintenance operation.
-    /// </summary>
-    public static Task<int> PruneExpiredAssertionsAsync(this AuthDbContext database, CancellationToken cancellationToken = default)
+    /// <param name="services">The service collection that receives the relational store registrations.</param>
+    extension(IServiceCollection services)
     {
-        var cutoffUtcTicks = DateTimeOffset.UtcNow.UtcTicks;
-        return database.AssertionReplays.Where(entry => entry.ExpiresAtUtcTicks < cutoffUtcTicks)
-            .ExecuteDeleteAsync(cancellationToken);
+        /// <summary>
+        /// Adds the Basilisque-backed relational stores. Register Basilisque provider services in the host.
+        /// </summary>
+        public IServiceCollection AddBaseAuthRelationalPersistence()
+        {
+            services.AddDbContext<AuthDbContext>();
+            services.TryAddEnumerable(ServiceDescriptor.Scoped<IDbInitializer, MigrationInitializer<AuthDbContext>>());
+            services.AddOpenIddict().AddCore(options =>
+            {
+                options.UseEntityFrameworkCore().UseDbContext<AuthDbContext>();
+            });
+            services.TryAddSingleton<EfClientAssertionReplayStore.PruningSchedule>();
+            services.TryAddScoped<IClientAssertionReplayStore, EfClientAssertionReplayStore>();
+            return services;
+        }
+    }
+
+    /// <param name="database">The scoped authentication database context.</param>
+    extension(AuthDbContext database)
+    {
+        /// <summary>
+        /// Deletes expired replay markers on demand. Use a scoped context for standalone maintenance.
+        /// </summary>
+        public Task<int> PruneExpiredAssertionsAsync(CancellationToken cancellationToken = default)
+        {
+            var cutoffUtcTicks = DateTimeOffset.UtcNow.UtcTicks;
+            return database.AssertionReplays.Where(entry => entry.ExpiresAtUtcTicks < cutoffUtcTicks)
+                .ExecuteDeleteAsync(cancellationToken);
+        }
+    }
+
+    internal sealed class MigrationInitializer<TContext> : DbInitializer<TContext>
+        where TContext : DbContext, IInitializableDbContext
+    {
+        public MigrationInitializer(TContext database) : base(database)
+        {
+        }
     }
 }

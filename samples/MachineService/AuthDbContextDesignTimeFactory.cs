@@ -21,7 +21,9 @@ public sealed class AuthDbContextDesignTimeFactory : BaseDesignTimeDbContextFact
     }
 
     /// <inheritdoc />
-    protected override IConfiguration CreateConfiguration(IServiceProvider serviceProvider, string[] args) =>
+    protected override IConfiguration CreateConfiguration(IServiceProvider serviceProvider, string[] args) => CreateDatabaseConfiguration(args);
+
+    internal static IConfiguration CreateDatabaseConfiguration(string[] args) =>
         new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Database:Provider"] = "SQLite",

@@ -4,9 +4,10 @@ using Basilisque.Base.Auth.Identity;
 using Basilisque.Base.Auth.Server.ClientAuth;
 using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.Base.Auth.Server.Identity;
-using Microsoft.EntityFrameworkCore;
+using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,6 +44,15 @@ internal static class Program
             }
         });
         builder.Services.AddBaseAuthLocalApi(audience);
+        builder.Services.AddBaseAuthLocalUsers().AddBaseAuthRelationalUserStore().AddDefaultUI();
+        builder.Services.AddAuthorizationBuilder().AddPolicy("LocalAccount", policy =>
+            policy.AddAuthenticationSchemes(IdentityConstants.ApplicationScheme).RequireAuthenticatedUser());
+        builder.Services.AddRazorPages(options =>
+        {
+            options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "LocalAccount");
+            options.Conventions.AddAreaPageRouteModelConvention("Identity", "/Account/Register",
+                model => model.Selectors.Clear());
+        });
         await using var app = builder.Build();
         if (builder.Configuration.GetValue<bool>("initialize-database"))
         {
@@ -50,8 +60,11 @@ internal static class Program
                 throw new NotSupportedException("Apply database migrations separately before running this host with Native AOT.");
 
             await using var scope = app.Services.CreateAsyncScope();
-            await scope.ServiceProvider.GetRequiredService<AuthDbContext>().Database.MigrateAsync();
+            foreach (var initializer in scope.ServiceProvider.GetServices<IDbInitializer>())
+                initializer.MigrateDatabase();
         }
+        if (await LocalUserAdministration.TryRunAsync(app.Services, builder.Configuration))
+            return;
         var operationNames = new[] { "register-client", "replace-client-keys", "disable-client" };
         var selectedOperations = operationNames.Where(name => !string.IsNullOrWhiteSpace(builder.Configuration[name])).ToArray();
         if (selectedOperations.Length > 1) throw new InvalidOperationException("Choose one client administration operation at a time.");
@@ -87,8 +100,13 @@ internal static class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapBaseAuthTokenEndpoint();
+        app.MapBaseAuthLocalUserAuthorization();
+        app.MapStaticAssets();
+        app.MapRazorPages().WithStaticAssets();
         app.MapGet("/api/ping", (HttpContext context) => TypedResults.Json(context.User.GetBaseAuthActor(), MachineServiceJsonContext.Default.Actor))
             .RequireAuthorization(BaseAuthPolicies.Service);
+        app.MapGet("/api/me", (HttpContext context) => TypedResults.Json(context.User.GetBaseAuthActor(), MachineServiceJsonContext.Default.Actor))
+            .RequireAuthorization(BaseAuthPolicies.User);
         await app.RunAsync();
     }
 

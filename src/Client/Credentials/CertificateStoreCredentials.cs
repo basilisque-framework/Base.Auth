@@ -4,7 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Basilisque.Base.Auth.Client.Credentials;
 
 /// <summary>
-/// Loads an explicitly installed client signing certificate; never generates a replacement.
+/// Loads an explicitly installed client signing certificate.
 /// </summary>
 public static class CertificateStoreCredentials
 {

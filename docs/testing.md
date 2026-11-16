@@ -13,7 +13,7 @@ also starts processes under .NET Framework 4.8.
 | `Server.Integration.Tests` | OpenIddict protocol, ASP.NET Core pipeline, SQLite, key rotation, and replay protection |
 | `DataAccess.EntityFramework.Relational.Integration.Tests` | Provider registration, EF models, migration assembly selection, migration SQL, and SQLite migrations |
 | `DataAccess.EntityFramework.SqlServer.Integration.Tests` | SQL Server provider registration |
-| `Client.Integration.Tests` | HTTPS client flows and protected key-package exchange under .NET Framework 4.8 and .NET |
+| `Client.Integration.Tests` | HTTPS client flows, protected key-package exchange under .NET Framework 4.8 and .NET, and the reference host's local login form |
 
 The persistence suite runs migrations against SQLite. SQL Server and PostgreSQL coverage
 is limited to provider configuration, models, and generated SQL.

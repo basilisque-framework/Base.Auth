@@ -3,31 +3,33 @@ using System;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
-[Migration("20261102142528_InitialOpenIddict")]
-partial class InitialOpenIddict
+partial class AuthDbContextModelSnapshot : ModelSnapshot
 {
-    /// <inheritdoc />
-    protected override void BuildTargetModel(ModelBuilder modelBuilder)
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
-        modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
+        modelBuilder
+            .HasAnnotation("ProductVersion", "10.0.13")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
         modelBuilder.Entity("Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model.AssertionReplayEntry", b =>
             {
                 b.Property<string>("Id")
                     .HasMaxLength(64)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(64)");
 
                 b.Property<long>("ExpiresAtUtcTicks")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bigint");
 
                 b.HasKey("Id");
 
@@ -40,63 +42,64 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ApplicationType")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("ClientId")
                     .HasMaxLength(100)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<string>("ClientSecret")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("ClientType")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("ConsentType")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("JsonWebKeySet")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Permissions")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("PostLogoutRedirectUris")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("RedirectUris")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Requirements")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Settings")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("ClientId")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("[ClientId] IS NOT NULL");
 
                 b.ToTable("Auth_Applications", (string)null);
             });
@@ -105,36 +108,36 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("datetime2");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Scopes")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(400)");
 
                 b.Property<string>("Type")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.HasKey("Id");
 
@@ -147,39 +150,40 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("Description")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Descriptions")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Name")
                     .HasMaxLength(200)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(200)");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Resources")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("Name")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("[Name] IS NOT NULL");
 
                 b.ToTable("Auth_Scopes", (string)null);
             });
@@ -188,56 +192,57 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("AuthorizationId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("datetime2");
 
                 b.Property<DateTime?>("ExpirationDate")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("datetime2");
 
                 b.Property<string>("Payload")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<DateTime?>("RedemptionDate")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("datetime2");
 
                 b.Property<string>("ReferenceId")
                     .HasMaxLength(100)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(400)");
 
                 b.Property<string>("Type")
                     .HasMaxLength(150)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(150)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("AuthorizationId");
 
                 b.HasIndex("ReferenceId")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("[ReferenceId] IS NOT NULL");
 
                 b.HasIndex("ApplicationId", "Status", "Subject", "Type");
 

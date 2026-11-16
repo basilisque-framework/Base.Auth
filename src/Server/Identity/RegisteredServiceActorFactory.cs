@@ -34,6 +34,7 @@ internal sealed class RegisteredServiceActorFactory : IServiceActorFactory
         identity.SetClaim(BaseAuthClaims.ActorKind, BaseAuthClaims.Service);
         identity.SetClaim(BaseAuthClaims.ContextId, context);
         identity.SetDestinations(_ => [Destinations.AccessToken]);
+
         return new ClaimsPrincipal(identity);
     }
 }

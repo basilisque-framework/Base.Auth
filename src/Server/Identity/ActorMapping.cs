@@ -8,22 +8,29 @@ namespace Basilisque.Base.Auth.Server.Identity;
 /// </summary>
 public static class ActorMapping
 {
-    /// <summary>
-    /// Reads the product identity from an authenticated principal with unambiguous claims.
-    /// </summary>
-    public static Actor GetBaseAuthActor(this ClaimsPrincipal principal)
+    /// <param name="principal">The authenticated principal from which to read the actor.</param>
+    extension(ClaimsPrincipal principal)
     {
-        ArgumentNullException.ThrowIfNull(principal);
-        if (principal.Identity?.IsAuthenticated != true)
-            throw new InvalidOperationException("The principal is not authenticated.");
-        return new Actor(single("sub"), single(BaseAuthClaims.ActorKind), single(BaseAuthClaims.ContextId));
-
-        string single(string type)
+        /// <summary>
+        /// Reads the product identity from an authenticated principal with unambiguous claims.
+        /// </summary>
+        public Actor GetBaseAuthActor()
         {
-            var claims = principal.FindAll(type).ToArray();
-            if (claims.Length != 1 || string.IsNullOrWhiteSpace(claims[0].Value))
-                throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");
-            return claims[0].Value;
+            ArgumentNullException.ThrowIfNull(principal);
+            if (principal.Identity?.IsAuthenticated != true)
+                throw new InvalidOperationException("The principal is not authenticated.");
+
+            return new Actor(single("sub"), single(BaseAuthClaims.ActorKind), single(BaseAuthClaims.ContextId));
+
+            string single(string type)
+            {
+                var claims = principal.FindAll(type).ToArray();
+
+                if (claims.Length != 1 || string.IsNullOrWhiteSpace(claims[0].Value))
+                    throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");
+
+                return claims[0].Value;
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
 [Migration("20261102142552_InitialOpenIddict")]

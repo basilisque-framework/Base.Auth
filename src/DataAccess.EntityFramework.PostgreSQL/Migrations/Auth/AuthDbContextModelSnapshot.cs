@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
 partial class AuthDbContextModelSnapshot : ModelSnapshot

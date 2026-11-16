@@ -1,9 +1,13 @@
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
+using Basilisque.Base.Auth.Server.ClientAuth;
+using Basilisque.Base.Auth.Server.Extensions;
+using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Integration.Tests;
 
@@ -49,6 +53,7 @@ public sealed class ProviderModelTests
         // Assert
         await Assert.That(script.Contains("InitialOpenIddict", StringComparison.Ordinal)).IsTrue();
         await Assert.That(script.Contains("Auth_Applications", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(script.Contains("__BASAuthMigrationsHistory", StringComparison.Ordinal)).IsTrue();
     }
 
     /// <summary>Selects the configured provider's migrations even when every provider module is registered.</summary>
@@ -83,6 +88,74 @@ public sealed class ProviderModelTests
         var pendingChanges = database.Database.HasPendingModelChanges();
         // Assert
         await Assert.That(pendingChanges).IsFalse();
+    }
+
+    /// <summary>Checks the independent Identity snapshot and generated assembly mapping for each provider.</summary>
+    [Test]
+    [Arguments("SQLite")]
+    [Arguments("PostgreSQL")]
+    [Arguments("SqlServer")]
+    public async Task HasPendingModelChanges_ShouldBeFalse_ForStandardIdentityContext(string providerName)
+    {
+        // Arrange
+        using var provider = createProvider(providerName, registerAllProviders: true, localUsers: true);
+        using var scope = provider.CreateScope();
+        var database = scope.ServiceProvider.GetRequiredService<LocalIdentityDbContext>();
+        // Act
+        var pendingChanges = database.Database.HasPendingModelChanges();
+        // Assert
+        await Assert.That(pendingChanges).IsFalse();
+        await Assert.That(database.GetService<IMigrationsAssembly>().Assembly.GetName().Name)
+            .IsEqualTo("Basilisque.Base.Auth.DataAccess.EntityFramework." + providerName);
+        await Assert.That(database.Database.GetMigrations().Single().EndsWith("_InitialLocalIdentity", StringComparison.Ordinal)).IsTrue();
+    }
+
+    /// <summary>Checks that a machine-only host exposes only its protocol migration initializer.</summary>
+    [Test]
+    public async Task GetServices_ShouldReturnOnlyAuthInitializer_WhenLocalStoreIsDisabled()
+    {
+        // Arrange
+        using var provider = createProvider("SQLite", registerAllProviders: true);
+        using var scope = provider.CreateScope();
+        // Act
+        var initializers = scope.ServiceProvider.GetServices<IDbInitializer>().ToArray();
+        // Assert
+        await Assert.That(initializers.Length).IsEqualTo(1);
+        await Assert.That(initializers[0].DbContext is AuthDbContext).IsTrue();
+    }
+
+    /// <summary>Checks that the protocol and Identity initializers record their migrations in the same history.</summary>
+    [Test]
+    public async Task MigrateDatabase_ShouldShareMigrationHistory_WhenLocalStoreIsEnabled()
+    {
+        // Arrange
+        var path = Path.Combine(Path.GetTempPath(), "base-auth-migrations-" + Guid.NewGuid().ToString("N") + ".db");
+        try
+        {
+            using var provider = createProvider("SQLite", registerAllProviders: true, localUsers: true,
+                sqliteConnectionString: $"Data Source={path};Pooling=False");
+            using var scope = provider.CreateScope();
+            var auth = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+            var identity = scope.ServiceProvider.GetRequiredService<LocalIdentityDbContext>();
+            var initializers = scope.ServiceProvider.GetServices<IDbInitializer>().ToArray();
+            var expectedMigrationIds = auth.Database.GetMigrations().Concat(identity.Database.GetMigrations()).Order(StringComparer.Ordinal).ToArray();
+            await auth.Database.MigrateAsync();
+            auth.AssertionReplays.Add(new AssertionReplayEntry { Id = "existing", ExpiresAtUtcTicks = DateTimeOffset.UtcNow.AddHours(1).UtcTicks });
+            await auth.SaveChangesAsync();
+            // Act
+            foreach (var initializer in initializers)
+                initializer.MigrateDatabase();
+            // Assert
+            await Assert.That(initializers.Length).IsEqualTo(2);
+            await Assert.That(auth.Database.GetAppliedMigrations().SequenceEqual(expectedMigrationIds)).IsTrue();
+            await Assert.That(identity.Database.GetAppliedMigrations().SequenceEqual(expectedMigrationIds)).IsTrue();
+            await Assert.That((await auth.AssertionReplays.AsNoTracking().SingleAsync()).Id).IsEqualTo("existing");
+            await Assert.That(await identity.Users.CountAsync()).IsEqualTo(0);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     /// <summary>Applies the selected migrations to a real SQLite database with all modules registered.</summary>
@@ -124,14 +197,80 @@ public sealed class ProviderModelTests
         await Assert.That(await database.AssertionReplays.AsNoTracking().Select(entry => entry.Id).SingleAsync()).IsEqualTo("valid");
     }
 
-    private static ServiceProvider createProvider(string providerName, bool registerAllProviders = false)
+    /// <summary>Checks that automatic pruning is throttled across replay-store scopes.</summary>
+    [Test]
+    public async Task TryUseAsync_ShouldPruneOnlyOnce_InTheSameIntervalAcrossScopes()
+    {
+        // Arrange
+        using var provider = createProvider("SQLite",
+            sqliteConnectionString: $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared;Pooling=False");
+        using var setupScope = provider.CreateScope();
+        var database = setupScope.ServiceProvider.GetRequiredService<AuthDbContext>();
+        await database.Database.OpenConnectionAsync();
+        await database.Database.MigrateAsync();
+        await addExpiredReplayMarkerAsync(database, "expired-before-first-use");
+        using var firstScope = provider.CreateScope();
+        var expiration = DateTimeOffset.UtcNow.AddMinutes(5);
+        await firstScope.ServiceProvider.GetRequiredService<IClientAssertionReplayStore>()
+            .TryUseAsync("client", "first", expiration);
+        await addExpiredReplayMarkerAsync(database, "expired-before-second-use");
+        using var secondScope = provider.CreateScope();
+        var secondStore = secondScope.ServiceProvider.GetRequiredService<IClientAssertionReplayStore>();
+
+        // Act
+        await secondStore.TryUseAsync("client", "second", expiration);
+
+        // Assert
+        await Assert.That(await database.AssertionReplays.AnyAsync(entry => entry.Id == "expired-before-first-use")).IsFalse();
+        await Assert.That(await database.AssertionReplays.AnyAsync(entry => entry.Id == "expired-before-second-use")).IsTrue();
+    }
+
+    /// <summary>Checks that a failed prune does not invalidate a newly recorded replay marker.</summary>
+    [Test]
+    public async Task TryUseAsync_ShouldAcceptNewMarker_WhenPruningFails()
+    {
+        // Arrange
+        using var provider = createProvider("SQLite");
+        using var scope = provider.CreateScope();
+        var database = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+        await database.Database.OpenConnectionAsync();
+        await database.Database.MigrateAsync();
+        await addExpiredReplayMarkerAsync(database, "expired");
+        await database.Database.ExecuteSqlRawAsync("""
+            CREATE TRIGGER RejectReplayPruning BEFORE DELETE ON Auth_AssertionReplays
+            BEGIN
+                SELECT RAISE(ABORT, 'Replay pruning rejected by test trigger');
+            END;
+            """);
+        var store = scope.ServiceProvider.GetRequiredService<IClientAssertionReplayStore>();
+
+        // Act
+        var accepted = await store.TryUseAsync("client", "assertion", DateTimeOffset.UtcNow.AddMinutes(5));
+
+        // Assert
+        await Assert.That(accepted).IsTrue();
+        await Assert.That(await database.AssertionReplays.CountAsync()).IsEqualTo(2);
+    }
+
+    private static async Task addExpiredReplayMarkerAsync(AuthDbContext database, string id)
+    {
+        database.AssertionReplays.Add(new AssertionReplayEntry
+        {
+            Id = id,
+            ExpiresAtUtcTicks = DateTimeOffset.UtcNow.AddMinutes(-1).UtcTicks
+        });
+        await database.SaveChangesAsync();
+    }
+
+    private static ServiceProvider createProvider(string providerName, bool registerAllProviders = false,
+        bool localUsers = false, string sqliteConnectionString = "Data Source=:memory:")
     {
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Database:Provider"] = providerName,
-            ["Database:ConnectionStrings:SQLite:ConnectionString"] = "Data Source=:memory:",
+            ["Database:ConnectionStrings:SQLite:ConnectionString"] = sqliteConnectionString,
             ["Database:ConnectionStrings:PostgreSQL:ConnectionString"] = "Host=localhost;Database=auth;Username=design;Password=design",
             ["Database:ConnectionStrings:SqlServer:ConnectionString"] = "Server=localhost;Database=auth;Integrated Security=True;TrustServerCertificate=True"
         }).Build());
@@ -149,6 +288,8 @@ public sealed class ProviderModelTests
             default: throw new ArgumentException("Unsupported provider.");
         }
         services.AddBaseAuthRelationalPersistence();
+        if (localUsers)
+            services.AddBaseAuthLocalUsers().AddBaseAuthRelationalUserStore();
         return services.BuildServiceProvider();
     }
 }

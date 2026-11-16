@@ -54,25 +54,63 @@ Implement `LoadSigningCredential` in the host and inject `IAccessTokenProvider` 
 service that calls the API. The credential factory can supply:
 
 - A loaded RSA private key via `ClientSigningCredential.FromRsa(...)`.
+- An ECDSA signing key via `ClientSigningCredential.FromEcdsa(...)`. P-256, P-384,
+  and P-521 select ES256, ES384, and ES512 respectively.
 - An RSA certificate via `ClientSigningCredential.FromCertificate(...)`.
 - An installed Windows certificate via
   `CertificateStoreCredentials.Load(thumbprint, StoreLocation.LocalMachine)`.
 - A protected package via `IPrivateKeyPackageProtector.Load(package, protectionContext)`.
 - Custom `SigningCredentials`, for example with an application-provided crypto provider.
 
+Export the signing key's public registration data with `credential.ExportPublicJwk()`.
+For an issuer that expects a JWKS, add the returned key to `new JsonWebKeySet().Keys`.
+The export includes the configured algorithm and key ID. Register it with an issuer
+that accepts that algorithm for the client. The optional Data Protection package format
+supports RSA keys.
+
 The DI container owns the returned credential wrapper. When creating a wrapper, specify
 whether it also owns the underlying RSA key or certificate. Grant the service account
 access to the private key when using the Windows certificate store. A non-exportable
 certificate key can be used directly for signing.
 
-Credentials are loaded per DI container. Restart the client host to load a replacement
-key or certificate. The access token cache is per process and registration. It refreshes
+For registrations added with `AddBaseAuthClient`, credentials are loaded per DI container.
+Restart the client host to load a replacement key or certificate. The access token cache is per process and registration. It refreshes
 tokens before expiry and combines concurrent requests. Set `CacheAccessTokens = false`
 for an application that handles renewal itself. Each call then performs a fresh token
 exchange. This grant does not issue refresh tokens.
 
 Use the optional `configureOpenIddict` callback for protocol configuration. Keep TLS
 validation enabled and keep private keys, assertions, and full tokens out of logs.
+
+### Manage connections at runtime
+
+Call `services.AddBaseAuthRuntimeClients()` when building the host. Inject
+`IRuntimeMachineClientRegistry` into the service that manages outbound connections.
+The host can start with no connections.
+
+```csharp
+registry.RegisterOrUpdate("partner", options =>
+{
+    options.Authority = new Uri("https://issuer.example/");
+    options.ClientId = "sync-client";
+    options.Scopes.Add("api");
+}, () => LoadPartnerCredential());
+
+var token = await tokenProvider.GetAccessTokenAsync("partner", cancellationToken);
+registry.Remove("partner");
+```
+
+The application persists the connection settings and credential reference and loads
+them into the registry after restart. Each instance maintains its own runtime registry.
+Propagate updates and removals to every instance that uses the connection. Restrict
+connection management to trusted administrators and apply your deployment's outbound
+network policy to discovery and token requests.
+
+Supply a fresh credential wrapper on each registration. The registry owns it and
+disposes it after replacement or removal once outstanding requests finish. A replacement
+starts with an empty token cache. Calls that already acquired the previous registration
+may complete with its token. Removing a registration affects future acquisitions.
+Previously issued tokens retain their original lifetime.
 
 ### Protect private-key packages
 
@@ -135,7 +173,8 @@ Base.Auth claim contract and scope.
 
 Select `SqlServer`, `PostgreSQL`, or `SQLite` with `Database:Provider` and set
 `Database:ConnectionStrings:<Provider>:ConnectionString`. Base.Auth supplies migrations
-for `AuthDbContext` for each of these providers. See the
+for `AuthDbContext` for each of these providers and records them in
+`__BASAuthMigrationsHistory`, shared with the optional local Identity store. See the
 [Basilisque Data Access Entity Framework documentation](https://github.com/basilisque-framework/DataAccess.EntityFramework/wiki)
 for custom migration assemblies and provider configuration.
 
@@ -202,9 +241,11 @@ switch the clients, then remove the old key. Rotation preserves the internal sub
 context. Disabling a client blocks new tokens. Existing access tokens remain usable until
 they expire.
 
-Schedule cleanup of expired replay markers through the maintenance command or
-`PruneExpiredAssertionsAsync`. Schedule OpenIddict token and authorization pruning
-separately where required.
+After recording a new replay marker, the default relational store automatically
+prunes expired markers at most once per minute per host. The maintenance command and
+`PruneExpiredAssertionsAsync()` can also prune on demand, including during periods
+without token requests. Schedule OpenIddict token and authorization pruning separately
+where required.
 
 ### Deploy the reference host
 

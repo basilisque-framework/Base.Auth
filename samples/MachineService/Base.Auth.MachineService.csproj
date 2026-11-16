@@ -7,6 +7,7 @@
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
     <ProjectReference Include="../../src/DataAccess.EntityFramework.SqlServer/Base.Auth.DataAccess.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="../../src/DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj" />
     <ProjectReference Include="../../src/DataAccess.EntityFramework.PostgreSQL/Base.Auth.DataAccess.EntityFramework.PostgreSQL.csproj" />

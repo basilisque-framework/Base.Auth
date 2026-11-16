@@ -19,4 +19,9 @@ public static class BaseAuthClaims
     /// The service actor kind.
     /// </summary>
     public const string Service = "service";
+
+    /// <summary>
+    /// The human actor kind.
+    /// </summary>
+    public const string User = "user";
 }

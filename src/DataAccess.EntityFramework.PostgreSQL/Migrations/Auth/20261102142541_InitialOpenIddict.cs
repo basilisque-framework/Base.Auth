@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations.Auth;
 
 /// <inheritdoc />
 public partial class InitialOpenIddict : Migration

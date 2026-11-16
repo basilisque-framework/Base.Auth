@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.Migrations;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
 partial class AuthDbContextModelSnapshot : ModelSnapshot
