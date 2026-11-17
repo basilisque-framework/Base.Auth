@@ -6,6 +6,7 @@ using Basilisque.Base.Auth.Server.ClientAuth;
 using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.TestHost;
@@ -37,15 +38,15 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
     internal readonly RSA ClientKey = RSA.Create(2048);
     internal HttpClient Http = null!;
 
-    internal static async Task<ProtocolTestEnvironment> CreateAsync(bool localUsers = false)
+    internal static async Task<ProtocolTestEnvironment> CreateAsync(bool localUsers = false, string? machineContextId = ContextId)
     {
         var environment = new ProtocolTestEnvironment();
         try
-        { await environment.initializeAsync(localUsers); return environment; }
+        { await environment.initializeAsync(localUsers, machineContextId); return environment; }
         catch { await environment.DisposeAsync(); throw; }
     }
 
-    private async Task initializeAsync(bool localUsers)
+    private async Task initializeAsync(bool localUsers, string? machineContextId)
     {
         Directory.CreateDirectory(_directory);
         var builder = WebApplication.CreateBuilder();
@@ -62,14 +63,17 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
             options => options.AddSigningKey(new RsaSecurityKey(_serverKey) { KeyId = "server-key" }).AddEphemeralEncryptionKey());
         builder.Services.AddBaseAuthLocalApi(Audience);
         if (localUsers)
+        {
+            builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
             builder.Services.AddBaseAuthLocalUsers().AddBaseAuthRelationalUserStore();
+        }
         _application = builder.Build();
         await using (var scope = _application.Services.CreateAsyncScope())
         {
             await scope.ServiceProvider.GetRequiredService<AuthDbContext>().Database.MigrateAsync();
             if (localUsers)
                 await scope.ServiceProvider.GetRequiredService<LocalIdentityDbContext>().Database.MigrateAsync();
-            await scope.ServiceProvider.GetRequiredService<IMachineClientRegistry>().RegisterAsync(ClientId, ContextId, PublicKeys(ClientKey));
+            await scope.ServiceProvider.GetRequiredService<IMachineClientRegistry>().RegisterAsync(ClientId, machineContextId, PublicKeys(ClientKey));
         }
         _application.UseAuthentication();
         _application.UseAuthorization();

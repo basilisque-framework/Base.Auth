@@ -36,7 +36,7 @@ public static class LocalUserServiceCollectionExtensions
                 options.User.RequireUniqueEmail = true;
                 configure?.Invoke(options);
             })
-                .AddUserValidator<ProvisionedLocalUserValidator>()
+                .AddUserValidator<LocalUserContextValidator>()
                 .AddSignInManager<LocalUserSignInManager>()
                 .AddDefaultTokenProviders();
         }

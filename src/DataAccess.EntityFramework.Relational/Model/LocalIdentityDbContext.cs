@@ -10,7 +10,7 @@ namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 /// <summary>
 /// Stores local accounts using the ASP.NET Core Identity user model.
 /// </summary>
-public sealed class LocalIdentityDbContext : IdentityUserContext<LocalUser>, IInitializableDbContext, IDbContextDesignTimeLifetimeOwner
+public sealed class LocalIdentityDbContext : IdentityUserContext<LocalUser, Guid>, IInitializableDbContext, IDbContextDesignTimeLifetimeOwner
 {
     private IDesignTimeServiceLifetime? _designTimeLifetime;
     private bool _disposed;
@@ -35,12 +35,12 @@ public sealed class LocalIdentityDbContext : IdentityUserContext<LocalUser>, IIn
             entity.HasIndex(user => user.NormalizedEmail).IsUnique();
             entity.Property(user => user.ContextId).HasMaxLength(256);
         });
-        builder.Entity<IdentityUserClaim<string>>().ToTable("Auth_UserClaims");
-        builder.Entity<IdentityUserLogin<string>>().ToTable("Auth_UserLogins");
-        builder.Entity<IdentityUserToken<string>>().ToTable("Auth_UserTokens");
+        builder.Entity<IdentityUserClaim<Guid>>().ToTable("Auth_UserClaims");
+        builder.Entity<IdentityUserLogin<Guid>>().ToTable("Auth_UserLogins");
+        builder.Entity<IdentityUserToken<Guid>>().ToTable("Auth_UserTokens");
 
-        if (builder.Model.FindEntityType(typeof(IdentityUserPasskey<string>)) is not null)
-            builder.Entity<IdentityUserPasskey<string>>().ToTable("Auth_UserPasskeys");
+        if (builder.Model.FindEntityType(typeof(IdentityUserPasskey<Guid>)) is not null)
+            builder.Entity<IdentityUserPasskey<Guid>>().ToTable("Auth_UserPasskeys");
     }
 
     void IDbContextDesignTimeLifetimeOwner.SetDesignTimeServiceLifetime(IDesignTimeServiceLifetime lifetime)

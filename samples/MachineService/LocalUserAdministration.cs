@@ -34,7 +34,7 @@ internal static class LocalUserAdministration
         {
             var users = scope.ServiceProvider.GetRequiredService<UserManager<LocalUser>>();
             var result = operation == "create-user"
-                ? await users.CreateAsync(new LocalUser { UserName = identifier, Email = identifier, ContextId = required(configuration, "context") }, password())
+                ? await users.CreateAsync(new LocalUser { UserName = identifier, Email = identifier, ContextId = configuration["context"] }, password())
                 : await updateUserAsync(users, identifier, operation);
             if (!result.Succeeded)
                 throw new InvalidOperationException(string.Join(" ", result.Errors.Select(error => error.Description)));

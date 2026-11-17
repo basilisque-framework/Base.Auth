@@ -45,7 +45,7 @@ and each token recipient validates its trusted issuer.
 
 The authenticated actor represents a user or a service. Users have stable internal IDs for
 profiles, preferences, and business data. Services have their own registered identities
-and assigned application contexts.
+and can be assigned an application context.
 
 At the API boundary, validate the token and resolve the actor and permitted context.
 Check product admission before evaluating permissions against the requested resource.

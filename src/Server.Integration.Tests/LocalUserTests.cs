@@ -25,11 +25,14 @@ public sealed class LocalUserTests
 
     /// <summary>Checks that the token carries the admitted internal identity.</summary>
     [Test]
-    public async Task ExchangeCodeAsync_ShouldIssueUserToken_ForProvisionedLocalUser()
+    [Arguments(true)]
+    [Arguments(false)]
+    public async Task ExchangeCodeAsync_ShouldIssueUserToken_ForProvisionedLocalUser(bool hasContext)
     {
         // Arrange
         await using var environment = await ProtocolTestEnvironment.CreateAsync(localUsers: true);
-        var userId = await provisionAsync(environment);
+        var contextId = hasContext ? ProtocolTestEnvironment.ContextId : null;
+        var userId = await provisionAsync(environment, contextId);
         var code = await authorizeAsync(environment);
         // Act
         using var response = await exchangeAsync(environment, code, Verifier);
@@ -39,8 +42,31 @@ public sealed class LocalUserTests
         using var tokens = JsonDocument.Parse(body);
         var jwt = new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(tokens.RootElement.GetProperty("access_token").GetString());
         await Assert.That(jwt.Subject).IsEqualTo(userId);
+        await Assert.That(Guid.Parse(jwt.Subject).Version).IsEqualTo(7);
         await Assert.That(jwt.GetClaim("actor_type").Value).IsEqualTo("user");
+        await Assert.That(jwt.TryGetClaim("context_id", out var contextClaim) ? contextClaim.Value : null).IsEqualTo(contextId);
         await Assert.That(jwt.TryGetClaim("base_auth.local_security_stamp", out _)).IsFalse();
+    }
+
+    /// <summary>Checks that a token with a user identity can authorize the API without a context claim.</summary>
+    [Test]
+    public async Task UserPolicy_ShouldAcceptUserToken_WithoutContextClaim()
+    {
+        // Arrange
+        await using var environment = await ProtocolTestEnvironment.CreateAsync(localUsers: true);
+        await provisionAsync(environment, contextId: null);
+        var code = await authorizeAsync(environment);
+        using var exchange = await exchangeAsync(environment, code, Verifier);
+        exchange.EnsureSuccessStatusCode();
+        using var tokens = JsonDocument.Parse(await exchange.Content.ReadAsStringAsync());
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/me");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.RootElement.GetProperty("access_token").GetString());
+
+        // Act
+        using var response = await environment.Http.SendAsync(request);
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 
     /// <summary>Checks that a browser login cannot bypass the code verifier.</summary>
@@ -108,11 +134,11 @@ public sealed class LocalUserTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
 
-    private static async Task<string> provisionAsync(ProtocolTestEnvironment environment)
+    private static async Task<string> provisionAsync(ProtocolTestEnvironment environment, string? contextId = ProtocolTestEnvironment.ContextId)
     {
         await using var scope = environment.CreateScope();
         var users = scope.ServiceProvider.GetRequiredService<UserManager<LocalUser>>();
-        var user = new LocalUser { UserName = Email, Email = Email, ContextId = ProtocolTestEnvironment.ContextId };
+        var user = new LocalUser { UserName = Email, Email = Email, ContextId = contextId };
         await ensureSuccessAsync(users.CreateAsync(user, Password));
         var descriptor = new OpenIddictApplicationDescriptor
         {
@@ -122,7 +148,7 @@ public sealed class LocalUserTests
         descriptor.Permissions.UnionWith([Permissions.Endpoints.Authorization, Permissions.Endpoints.Token,
             Permissions.GrantTypes.AuthorizationCode, Permissions.ResponseTypes.Code, Permissions.Prefixes.Scope + "api"]);
         await scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>().CreateAsync(descriptor);
-        return user.Id;
+        return user.Id.ToString("D");
     }
 
     private static async Task<string> authorizeAsync(ProtocolTestEnvironment environment)

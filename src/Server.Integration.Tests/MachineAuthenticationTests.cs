@@ -66,10 +66,13 @@ public sealed class MachineAuthenticationTests
 
     /// <summary>Obtains a token through discovery and private_key_jwt and calls the protected product API.</summary>
     [Test]
-    public async Task GetAccessTokenAsync_ShouldAuthenticateProductService_WithRegisteredKey()
+    [Arguments(true)]
+    [Arguments(false)]
+    public async Task GetAccessTokenAsync_ShouldAuthenticateProductService_WithRegisteredKey(bool hasContext)
     {
         // Arrange
-        await using var environment = await ProtocolTestEnvironment.CreateAsync();
+        var contextId = hasContext ? ProtocolTestEnvironment.ContextId : null;
+        await using var environment = await ProtocolTestEnvironment.CreateAsync(machineContextId: contextId);
         await using var client = environment.CreateClient();
         var token = await client.GetRequiredService<IAccessTokenProvider>().GetAccessTokenAsync("test");
         using var request = new HttpRequestMessage(HttpMethod.Get, "api/ping");
@@ -79,7 +82,9 @@ public sealed class MachineAuthenticationTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         using var identity = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-        await Assert.That(identity.RootElement.GetProperty("contextId").GetString()).IsEqualTo(ProtocolTestEnvironment.ContextId);
+        await Assert.That(identity.RootElement.GetProperty("contextId").GetString()).IsEqualTo(contextId);
+        var jwt = new JsonWebToken(token.Value);
+        await Assert.That(jwt.TryGetClaim("context_id", out var contextClaim) ? contextClaim.Value : null).IsEqualTo(contextId);
         await Assert.That(identity.RootElement.GetProperty("kind").GetString()).IsEqualTo("service");
         await Assert.That(identity.RootElement.GetProperty("subjectId").GetString()).IsNotEqualTo(ProtocolTestEnvironment.ClientId);
     }

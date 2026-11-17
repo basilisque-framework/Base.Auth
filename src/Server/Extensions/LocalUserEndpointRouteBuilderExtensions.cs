@@ -95,7 +95,7 @@ public static class LocalUserEndpointRouteBuilderExtensions
         identity.SetClaim(Claims.Subject, actor.SubjectId);
         identity.SetClaim(BaseAuthClaims.ActorKind, actor.Kind);
         identity.SetClaim(BaseAuthClaims.ContextId, actor.ContextId);
-        identity.SetClaim(LocalAccountIdClaim, user.Id);
+        identity.SetClaim(LocalAccountIdClaim, await signIn.UserManager.GetUserIdAsync(user));
         identity.SetClaim(SecurityStampClaim, await signIn.UserManager.GetSecurityStampAsync(user));
 
         if (issuedAt is not null)

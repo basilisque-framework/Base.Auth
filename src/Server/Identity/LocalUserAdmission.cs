@@ -7,8 +7,8 @@ internal sealed class LocalUserAdmission : ILocalUserAdmission
     public ValueTask<Actor?> ResolveAsync(LocalUser user, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return ValueTask.FromResult(user.Enabled && !string.IsNullOrWhiteSpace(user.ContextId)
-            ? new Actor(user.Id, BaseAuthClaims.User, user.ContextId)
+        return ValueTask.FromResult(user.Enabled
+            ? new Actor(user.Id.ToString("D"), BaseAuthClaims.User, user.ContextId)
             : null);
     }
 }

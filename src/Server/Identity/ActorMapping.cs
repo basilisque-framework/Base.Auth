@@ -20,11 +20,17 @@ public static class ActorMapping
             if (principal.Identity?.IsAuthenticated != true)
                 throw new InvalidOperationException("The principal is not authenticated.");
 
-            return new Actor(single("sub"), single(BaseAuthClaims.ActorKind), single(BaseAuthClaims.ContextId));
+            return new Actor(single("sub"), single(BaseAuthClaims.ActorKind), optional(BaseAuthClaims.ContextId));
 
-            string single(string type)
+            string single(string type) => optional(type)
+                ?? throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");
+
+            string? optional(string type)
             {
                 var claims = principal.FindAll(type).ToArray();
+
+                if (claims.Length == 0)
+                    return null;
 
                 if (claims.Length != 1 || string.IsNullOrWhiteSpace(claims[0].Value))
                     throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");

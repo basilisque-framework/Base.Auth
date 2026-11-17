@@ -11,26 +11,26 @@ public sealed class Actor
     public string SubjectId { get; }
 
     /// <summary>
-    /// Gets the actor kind, currently service or, in future flows, user.
+    /// Gets the actor kind, either service or user.
     /// </summary>
     public string Kind { get; }
 
     /// <summary>
-    /// Gets the server-assigned installation/customer context.
+    /// Gets the server-assigned installation or customer context, if assigned.
     /// </summary>
-    public string ContextId { get; }
+    public string? ContextId { get; }
 
     /// <summary>
-    /// Creates an actor in an explicitly assigned application context.
+    /// Creates an actor with an optional application context.
     /// </summary>
-    public Actor(string subjectId, string kind, string contextId)
+    public Actor(string subjectId, string kind, string? contextId = null)
     {
         if (string.IsNullOrWhiteSpace(subjectId))
             throw new ArgumentException("A subject is required.", nameof(subjectId));
         if (string.IsNullOrWhiteSpace(kind))
             throw new ArgumentException("An actor kind is required.", nameof(kind));
-        if (string.IsNullOrWhiteSpace(contextId))
-            throw new ArgumentException("A context is required.", nameof(contextId));
+        if (contextId is not null && string.IsNullOrWhiteSpace(contextId))
+            throw new ArgumentException("A context must contain a value when specified.", nameof(contextId));
 
         SubjectId = subjectId;
         Kind = kind;

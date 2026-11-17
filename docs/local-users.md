@@ -3,7 +3,7 @@
 ASP.NET Core Identity handles local credentials, password hashing, lockout, account
 recovery tokens, and authenticator-based two-factor sign-in. OpenIddict handles the
 authorization request, code exchange, and token issuance. The local admission service
-resolves the account to a stable product user ID and an assigned application context.
+resolves the account to a stable product user ID and, when assigned, an application context.
 
 ## Integrate the host
 
@@ -32,13 +32,18 @@ Use the default Identity store with `AddBaseAuthRelationalUserStore()` or regist
 application-specific Identity store. Register a custom `ILocalUserAdmission` before
 calling `AddBaseAuthLocalUsers()` to resolve the user's product ID and context from an
 existing product store. The admission service has no HTTP or OpenIddict dependency.
-New accounts must be provisioned with a context from trusted application code.
+Provision accounts through trusted application code and assign a context when the
+product uses one. The reference host disables public registration. User access tokens
+omit `context_id` when no context is assigned. A product with users who belong to
+multiple tenants can check their tenant-specific roles using the user ID and the
+tenant requested by the API call.
 
 ### Database migrations
 
 `LocalIdentityDbContext` uses the standard Identity model with Base.Auth table names,
-application context, account status, and a unique normalized email index. It uses
-the same Basilisque provider and connection settings as `AuthDbContext`. Each
+an optional application context, account status, and a unique normalized email index.
+New accounts use UUIDv7 `Guid` keys. Both contexts use the same Basilisque provider
+and connection settings. Each
 provider assembly contains `Migrations/Auth` for `AuthDbContext` and
 `Migrations/Identity` for `LocalIdentityDbContext`. Both contexts record
 applied migration IDs in `__BASAuthMigrationsHistory`. Migration IDs must be unique
@@ -58,10 +63,12 @@ HTTPS certificate by default. Set `BASE_AUTH_LOCAL_USER_PASSWORD` in the provisi
 process environment and remove it when the command completes.
 
 ```powershell
-dotnet run --project samples/MachineService -- --initialize-database true --create-user reader@example.test --context demo-installation
+dotnet run --project samples/MachineService -- --initialize-database true --create-user reader@example.test
 dotnet run --project samples/MachineService -- --register-user-client desktop-demo --redirect-uri http://127.0.0.1:8765/callback
 dotnet run --project samples/MachineService
 ```
+
+Pass `--context demo-installation` to `--create-user` to assign an application context.
 
 Configure your OIDC client as a public client with authority `https://localhost:7443/`,
 client ID `desktop-demo`, the registered redirect URI, response type `code`, S256 PKCE,

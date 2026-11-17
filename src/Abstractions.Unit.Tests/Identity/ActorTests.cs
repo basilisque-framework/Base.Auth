@@ -6,9 +6,9 @@ namespace Basilisque.Base.Auth.Abstractions.Unit.Tests.Identity;
 [Category("Unit")]
 public sealed class ActorTests
 {
-    /// <summary>Rejects identities without an explicit product context.</summary>
+    /// <summary>Rejects explicitly assigned contexts that are blank.</summary>
     [Test]
-    public async Task Constructor_ShouldRejectMissingContext_InServiceIdentity()
+    public async Task Constructor_ShouldRejectEmptyContext_InServiceIdentity()
     {
         // Arrange
         var context = "";

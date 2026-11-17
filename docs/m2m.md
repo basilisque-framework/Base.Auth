@@ -19,7 +19,7 @@ package also support .NET Framework 4.8. The repository's .NET target is configu
 ## Token flow
 
 1. Provision an RSA key pair for the client. Register its client ID, public JSON Web Key Set
-   (JWKS), and application context with the server. The private key remains with the client.
+   (JWKS), and optionally an application context with the server. The private key remains with the client.
 2. The client uses its configured HTTPS authority to discover the token endpoint at
    `/.well-known/openid-configuration`.
 3. The client signs a short-lived assertion and submits it to the token endpoint with the
@@ -156,8 +156,10 @@ Add `UseAuthentication()` and `UseAuthorization()` to the request pipeline and c
 
 Protect product endpoints with `RequireAuthorization(BaseAuthPolicies.Service)`. Read
 the validated service identity through `User.GetBaseAuthActor()`. Registration generates
-its `SubjectId` and binds it to the administrator-assigned `ContextId`. Use that context
-to limit data access in product endpoints.
+its `SubjectId` and can assign a `ContextId`. The access token includes `context_id`
+when a context was assigned. The application decides how to authorize data access,
+for example by checking that context or by looking up the service's tenant permissions
+using its `SubjectId`.
 
 Register a custom `IServiceActorFactory` before adding the server defaults to override
 actor creation. Other integration points include `IMachineClientRegistry`,
@@ -204,7 +206,7 @@ OpenIddict signing and encryption.
 2. Initialize the database and register the client in one administrative invocation.
 
    ```powershell
-   dotnet run --project samples/MachineService -- --initialize-database true --register-client demo-client --context customer-installation --public-jwks C:/setup/keys.public.json
+   dotnet run --project samples/MachineService -- --initialize-database true --register-client demo-client --public-jwks C:/setup/keys.public.json
    ```
 
 3. Start the service.
@@ -221,7 +223,8 @@ OpenIddict signing and encryption.
    dotnet run --project samples/MachineClient -f $targetFramework -- https://localhost:7443/ demo-client C:/setup/client.pfx https://localhost:7443/api/ping api
    ```
 
-The client prints the subject and context IDs returned by `/api/ping`. A .NET Framework
+Use `--context customer-installation` during registration to assign an application context.
+The client prints the subject and any context ID returned by `/api/ping`. A .NET Framework
 executable that embeds the library must generate the assembly binding redirects required
 by its dependencies.
 

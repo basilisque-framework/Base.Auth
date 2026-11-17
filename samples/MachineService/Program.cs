@@ -83,7 +83,7 @@ internal static class Program
                 if (operation == "replace-client-keys") await registry.ReplacePublicKeysAsync(clientId, publicKeys);
                 else
                 {
-                    var contextId = builder.Configuration["context"] ?? throw new InvalidOperationException("--context is required.");
+                    var contextId = builder.Configuration["context"];
                     await registry.RegisterAsync(clientId, contextId, publicKeys);
                 }
             }

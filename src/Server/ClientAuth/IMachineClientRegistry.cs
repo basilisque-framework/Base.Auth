@@ -8,9 +8,10 @@ namespace Basilisque.Base.Auth.Server.ClientAuth;
 public interface IMachineClientRegistry
 {
     /// <summary>
-    /// Creates a client with a server-assigned subject. Existing registrations are never overwritten.
+    /// Creates a client with a server-assigned subject and an optional context. Pass null for no context.
+    /// Existing registrations are never overwritten.
     /// </summary>
-    ValueTask RegisterAsync(string clientId, string contextId, JsonWebKeySet publicKeys, CancellationToken cancellationToken = default);
+    ValueTask RegisterAsync(string clientId, string? contextId, JsonWebKeySet publicKeys, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Replaces registered public keys, allowing an overlap during rotation. Keeps subject and context stable.

@@ -19,7 +19,7 @@ internal sealed class LocalUserSignInManager : SignInManager<LocalUser>
     }
 
     public override async Task<bool> CanSignInAsync(LocalUser user)
-        => user.Enabled && !string.IsNullOrWhiteSpace(user.ContextId) && await base.CanSignInAsync(user);
+        => user.Enabled && await base.CanSignInAsync(user);
 
     public override Task<SignInResult> PasswordSignInAsync(LocalUser user, string password, bool isPersistent, bool lockoutOnFailure)
         => base.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure: true);

@@ -25,10 +25,11 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
         _options = options;
     }
 
-    public async ValueTask RegisterAsync(string clientId, string contextId, JsonWebKeySet publicKeys, CancellationToken cancellationToken = default)
+    public async ValueTask RegisterAsync(string clientId, string? contextId, JsonWebKeySet publicKeys, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(clientId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(contextId);
+        if (contextId is not null)
+            ArgumentException.ThrowIfNullOrWhiteSpace(contextId);
         validatePublicKeys(publicKeys);
         if (await _applications.FindByClientIdAsync(clientId, cancellationToken) is not null)
             throw new InvalidOperationException("The client already exists. Use an explicit key rotation operation.");
@@ -46,7 +47,8 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
             Permissions.Prefixes.Scope + _options.Value.ApiScope
         ]);
         descriptor.Properties[SubjectProperty] = JsonSerializer.SerializeToElement(Guid.NewGuid().ToString("D"), MachineClientJsonContext.Default.String);
-        descriptor.Properties[ContextProperty] = JsonSerializer.SerializeToElement(contextId, MachineClientJsonContext.Default.String);
+        if (contextId is not null)
+            descriptor.Properties[ContextProperty] = JsonSerializer.SerializeToElement(contextId, MachineClientJsonContext.Default.String);
         await _applications.CreateAsync(descriptor, cancellationToken);
     }
 
