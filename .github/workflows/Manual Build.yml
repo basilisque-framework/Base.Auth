@@ -1,4 +1,4 @@
-# Copyright 2026 Alexander St‰rk
+# Copyright 2026 Alexander St√§rk
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ jobs:
       basBuildType: ${{ inputs.basBuildTypeChoice }}
       projectOrSolution: 'Basilisque.Base.Auth.slnx'
       versioningProjectName: Base.Auth.Client
+      artifactsPath: artifacts
       runDotnetPublish: false
       runDotnetPack: true
     secrets: inherit
