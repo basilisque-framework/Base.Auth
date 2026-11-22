@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="CertificateHasNoPrivateKey" xml:space="preserve">
+    <value>The certificate has no private key.</value>
+  </data>
+  <data name="ExpiredTokenReturned" xml:space="preserve">
+    <value>The authorization server returned an expired token.</value>
+  </data>
+  <data name="FixedMachineClientNameExists" xml:space="preserve">
+    <value>A fixed machine client already uses this registration name.</value>
+  </data>
+  <data name="InvalidMachineClientOptions" xml:space="preserve">
+    <value>An HTTPS authority, client ID, valid scopes and renewal margin are required.</value>
+  </data>
+  <data name="KeyIdentifierRequired" xml:space="preserve">
+    <value>A key identifier is required.</value>
+  </data>
+  <data name="MachineClientNotConfigured" xml:space="preserve">
+    <value>The machine client is not configured.</value>
+  </data>
+  <data name="MachineClientRegistrationExists" xml:space="preserve">
+    <value>The machine client registration already exists.</value>
+  </data>
+  <data name="MultipleMatchingSigningCertificates" xml:space="preserve">
+    <value>Multiple matching signing certificates were found.</value>
+  </data>
+  <data name="NoValidSigningCertificate" xml:space="preserve">
+    <value>No currently valid signing certificate was found.</value>
+  </data>
+  <data name="RegistrationNameRequired" xml:space="preserve">
+    <value>A registration name is required.</value>
+  </data>
+  <data name="RsaCertificateTooShort" xml:space="preserve">
+    <value>An RSA certificate with at least 2048 bits is required.</value>
+  </data>
+  <data name="RsaKeyTooShort" xml:space="preserve">
+    <value>RSA keys must contain at least 2048 bits.</value>
+  </data>
+  <data name="SigningCredentialMissing" xml:space="preserve">
+    <value>The credential factory returned no signing credential.</value>
+  </data>
+  <data name="ThumbprintRequired" xml:space="preserve">
+    <value>A thumbprint is required.</value>
+  </data>
+  <data name="TokenRequestFailed" xml:space="preserve">
+    <value>The token request failed.</value>
+  </data>
+  <data name="UnsupportedCertificateKey" xml:space="preserve">
+    <value>The certificate must contain an RSA or ECDSA public key.</value>
+  </data>
+  <data name="UnsupportedNamedCurve" xml:space="preserve">
+    <value>Only the named P-256, P-384, and P-521 curves are supported.</value>
+  </data>
+  <data name="UnsupportedSigningPublicKey" xml:space="preserve">
+    <value>The signing key must expose an RSA or ECDSA public key.</value>
+  </data>
+  <data name="ValidRegistrationNameRequired" xml:space="preserve">
+    <value>A valid registration name is required.</value>
+  </data>
+</root>

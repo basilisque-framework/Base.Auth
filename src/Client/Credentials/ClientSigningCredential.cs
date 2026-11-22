@@ -39,7 +39,7 @@ public sealed class ClientSigningCredential : IDisposable
             RsaSecurityKey rsa => exportRsa(rsa.Rsa is { } rsaKey ? rsaKey.ExportParameters(false) : rsa.Parameters),
             ECDsaSecurityKey ec => exportEc(ec.ECDsa.ExportParameters(false)),
             X509SecurityKey certificate => exportCertificate(certificate.Certificate),
-            _ => throw new NotSupportedException("The signing key must expose an RSA or ECDSA public key.")
+            _ => throw new NotSupportedException(Messages.UnsupportedSigningPublicKey)
         };
         jwk.Kid = key.KeyId;
         jwk.Alg = Credentials.Algorithm;
@@ -56,10 +56,10 @@ public sealed class ClientSigningCredential : IDisposable
             throw new ArgumentNullException(nameof(key));
 
         if (key.KeySize < 2048)
-            throw new ArgumentException("RSA keys must contain at least 2048 bits.", nameof(key));
+            throw new ArgumentException(Messages.RsaKeyTooShort, nameof(key));
 
         if (string.IsNullOrWhiteSpace(keyId))
-            throw new ArgumentException("A key identifier is required.", nameof(keyId));
+            throw new ArgumentException(Messages.KeyIdentifierRequired, nameof(keyId));
 
         return new ClientSigningCredential(
             new SigningCredentials(new RsaSecurityKey(key) { KeyId = keyId }, SecurityAlgorithms.RsaSha256),
@@ -80,7 +80,7 @@ public sealed class ClientSigningCredential : IDisposable
             throw new ArgumentNullException(nameof(key));
 
         if (string.IsNullOrWhiteSpace(keyId))
-            throw new ArgumentException("A key identifier is required.", nameof(keyId));
+            throw new ArgumentException(Messages.KeyIdentifierRequired, nameof(keyId));
 
         var (_, algorithm) = getEcProfile(key.ExportParameters(false).Curve);
         return new ClientSigningCredential(
@@ -97,11 +97,11 @@ public sealed class ClientSigningCredential : IDisposable
             throw new ArgumentNullException(nameof(certificate));
 
         if (!certificate.HasPrivateKey)
-            throw new ArgumentException("The certificate has no private key.", nameof(certificate));
+            throw new ArgumentException(Messages.CertificateHasNoPrivateKey, nameof(certificate));
 
         using var key = certificate.GetRSAPrivateKey();
         if (key is null || key.KeySize < 2048)
-            throw new ArgumentException("An RSA certificate with at least 2048 bits is required.", nameof(certificate));
+            throw new ArgumentException(Messages.RsaCertificateTooShort, nameof(certificate));
 
         return new ClientSigningCredential(
             new SigningCredentials(new X509SecurityKey(certificate), SecurityAlgorithms.RsaSha256),
@@ -118,7 +118,7 @@ public sealed class ClientSigningCredential : IDisposable
         if (ec is not null)
             return exportEc(ec.ExportParameters(false));
 
-        throw new NotSupportedException("The certificate must contain an RSA or ECDSA public key.");
+        throw new NotSupportedException(Messages.UnsupportedCertificateKey);
     }
 
     private static JsonWebKey exportRsa(RSAParameters parameters)
@@ -147,7 +147,7 @@ public sealed class ClientSigningCredential : IDisposable
             "1.2.840.10045.3.1.7" => ("P-256", SecurityAlgorithms.EcdsaSha256),
             "1.3.132.0.34" => ("P-384", SecurityAlgorithms.EcdsaSha384),
             "1.3.132.0.35" => ("P-521", SecurityAlgorithms.EcdsaSha512),
-            _ => throw new NotSupportedException("Only the named P-256, P-384, and P-521 curves are supported.")
+            _ => throw new NotSupportedException(Messages.UnsupportedNamedCurve)
         };
 
     /// <inheritdoc />

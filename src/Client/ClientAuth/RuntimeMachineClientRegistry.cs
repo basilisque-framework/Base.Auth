@@ -29,9 +29,9 @@ internal sealed class RuntimeMachineClientRegistry : IRuntimeMachineClientRegist
         Func<ClientSigningCredential> createCredential)
     {
         if (string.IsNullOrWhiteSpace(registrationName) || registrationName.Any(character => character is '\u001e' or '\u001f'))
-            throw new ArgumentException("A valid registration name is required.", nameof(registrationName));
+            throw new ArgumentException(Messages.ValidRegistrationNameRequired, nameof(registrationName));
         if (_fixedNames.Contains(registrationName))
-            throw new InvalidOperationException("A fixed machine client already uses this registration name.");
+            throw new InvalidOperationException(Messages.FixedMachineClientNameExists);
         if (configure is null)
             throw new ArgumentNullException(nameof(configure));
         if (createCredential is null)
@@ -40,9 +40,9 @@ internal sealed class RuntimeMachineClientRegistry : IRuntimeMachineClientRegist
         var settings = new MachineClientOptions();
         configure(settings);
         if (!settings.IsValid())
-            throw new ArgumentException("An HTTPS authority, client ID, valid scopes and renewal margin are required.", nameof(configure));
+            throw new ArgumentException(Messages.InvalidMachineClientOptions, nameof(configure));
 
-        var credential = createCredential() ?? throw new InvalidOperationException("The credential factory returned no signing credential.");
+        var credential = createCredential() ?? throw new InvalidOperationException(Messages.SigningCredentialMissing);
         Entry entry;
         try
         {
@@ -96,7 +96,7 @@ internal sealed class RuntimeMachineClientRegistry : IRuntimeMachineClientRegist
     public bool Remove(string registrationName)
     {
         if (string.IsNullOrWhiteSpace(registrationName))
-            throw new ArgumentException("A registration name is required.", nameof(registrationName));
+            throw new ArgumentException(Messages.RegistrationNameRequired, nameof(registrationName));
 
         Entry? entry;
         lock (_gate)

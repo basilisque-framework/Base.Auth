@@ -18,12 +18,12 @@ public static class ActorMapping
         {
             ArgumentNullException.ThrowIfNull(principal);
             if (principal.Identity?.IsAuthenticated != true)
-                throw new InvalidOperationException("The principal is not authenticated.");
+                throw new InvalidOperationException(Messages.PrincipalNotAuthenticated);
 
             return new Actor(single("sub"), single(BaseAuthClaims.ActorKind), optional(BaseAuthClaims.ContextId));
 
             string single(string type) => optional(type)
-                ?? throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");
+                ?? throw new InvalidOperationException(Messages.AmbiguousProductIdentity);
 
             string? optional(string type)
             {
@@ -33,7 +33,7 @@ public static class ActorMapping
                     return null;
 
                 if (claims.Length != 1 || string.IsNullOrWhiteSpace(claims[0].Value))
-                    throw new InvalidOperationException("The principal does not contain an unambiguous product identity.");
+                    throw new InvalidOperationException(Messages.AmbiguousProductIdentity);
 
                 return claims[0].Value;
             }

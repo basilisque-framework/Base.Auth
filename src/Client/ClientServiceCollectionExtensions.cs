@@ -44,7 +44,7 @@ public static class ClientServiceCollectionExtensions
             Action<OpenIddictClientBuilder>? configureOpenIddict = null)
         {
             if (string.IsNullOrWhiteSpace(registrationName))
-                throw new ArgumentException("A registration name is required.", nameof(registrationName));
+                throw new ArgumentException(Messages.RegistrationNameRequired, nameof(registrationName));
 
             if (configure is null)
                 throw new ArgumentNullException(nameof(configure));
@@ -54,10 +54,10 @@ public static class ClientServiceCollectionExtensions
 
             if (services.Any(descriptor => descriptor.ServiceType == typeof(ClientSigningCredential) &&
                 Equals(descriptor.ServiceKey, registrationName)))
-                throw new InvalidOperationException("The machine client registration already exists.");
+                throw new InvalidOperationException(Messages.MachineClientRegistrationExists);
 
-            services.AddOptions<MachineClientOptions>(registrationName).Configure(configure)
-                .Validate(options => options.IsValid(), "An HTTPS authority, client ID, valid scopes and renewal margin are required.");
+            services.AddOptions<MachineClientOptions>(registrationName).Configure(configure);
+            services.AddSingleton<IValidateOptions<MachineClientOptions>>(new MachineClientOptionsValidator(registrationName));
 
             services.AddKeyedSingleton<ClientSigningCredential>(registrationName, (provider, _) => credentialFactory(provider));
             services.AddSingleton(new FixedMachineClientName(registrationName));

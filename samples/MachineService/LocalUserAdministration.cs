@@ -19,7 +19,7 @@ internal static class LocalUserAdministration
             return false;
         if (selected.Length != 1 || new[] { "register-client", "replace-client-keys", "disable-client" }
             .Any(name => !string.IsNullOrWhiteSpace(configuration[name])))
-            throw new InvalidOperationException("Choose one administration operation at a time.");
+            throw new InvalidOperationException(Messages.OneAdministrationOperation);
 
         var operation = selected[0];
         var identifier = configuration[operation]!;
@@ -39,13 +39,13 @@ internal static class LocalUserAdministration
             if (!result.Succeeded)
                 throw new InvalidOperationException(string.Join(" ", result.Errors.Select(error => error.Description)));
         }
-        Console.WriteLine("Local authentication administration completed.");
+        Console.WriteLine(Messages.LocalAdministrationCompleted);
         return true;
     }
 
     private static async Task<IdentityResult> updateUserAsync(UserManager<LocalUser> users, string identifier, string operation)
     {
-        var user = await users.FindByNameAsync(identifier) ?? throw new InvalidOperationException("The user does not exist.");
+        var user = await users.FindByNameAsync(identifier) ?? throw new InvalidOperationException(Messages.UserNotFound);
         if (operation == "reset-user-password")
         {
             var token = await users.GeneratePasswordResetTokenAsync(user);
@@ -60,7 +60,7 @@ internal static class LocalUserAdministration
         if (!Uri.TryCreate(redirect, UriKind.Absolute, out var redirectUri) ||
             (redirectUri.Scheme != Uri.UriSchemeHttps && !(redirectUri.IsLoopback && redirectUri.Scheme == Uri.UriSchemeHttp)) ||
             !string.IsNullOrEmpty(redirectUri.Fragment) || !string.IsNullOrEmpty(redirectUri.UserInfo))
-            throw new InvalidOperationException("Provide an HTTPS or HTTP loopback redirect URI.");
+            throw new InvalidOperationException(Messages.InvalidRedirectUri);
         var client = new OpenIddictApplicationDescriptor
         {
             ClientId = clientId,
@@ -75,9 +75,9 @@ internal static class LocalUserAdministration
     }
 
     private static string required(IConfiguration configuration, string option)
-        => configuration[option] ?? throw new InvalidOperationException($"--{option} is required.");
+        => configuration[option] ?? throw new InvalidOperationException(Messages.CommandOptionRequired(option));
 
     private static string password()
         => Environment.GetEnvironmentVariable("BASE_AUTH_LOCAL_USER_PASSWORD")
-            ?? throw new InvalidOperationException("Set BASE_AUTH_LOCAL_USER_PASSWORD for this administration process.");
+            ?? throw new InvalidOperationException(Messages.LocalUserPasswordRequired);
 }

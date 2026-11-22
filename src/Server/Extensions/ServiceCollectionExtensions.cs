@@ -5,6 +5,7 @@ using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using OpenIddict.Server;
 using OpenIddict.Validation.AspNetCore;
@@ -28,10 +29,11 @@ public static class ServiceCollectionExtensions
             ArgumentNullException.ThrowIfNull(configure);
             ArgumentNullException.ThrowIfNull(configureOpenIddict);
             services.AddOptions<AuthServerOptions>().Configure(configure)
-                .Validate(options => options.IsValid(), "Valid HTTPS issuer, audience, API scope, endpoint and lifetime are required.")
                 .ValidateOnStart();
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<AuthServerOptions>, AuthServerOptionsValidator>());
             services.TryAddScoped<IMachineClientRegistry, MachineClientRegistry>();
             services.TryAddScoped<IServiceActorFactory, RegisteredServiceActorFactory>();
+            services.TryAddSingleton<IStringLocalizer<AuthProtocolMessages>, AuthProtocolMessageLocalizer>();
             services.AddOpenIddict().AddServer(options =>
             {
                 options.AllowClientCredentialsFlow();
@@ -76,7 +78,7 @@ public static class ServiceCollectionExtensions
         {
             ArgumentNullException.ThrowIfNull(authority);
             if (!authority.IsAbsoluteUri || authority.Scheme != Uri.UriSchemeHttps)
-                throw new ArgumentException("An HTTPS authority is required.", nameof(authority));
+                throw new ArgumentException(Messages.HttpsAuthorityRequired, nameof(authority));
             ArgumentException.ThrowIfNullOrWhiteSpace(audience);
             services.AddOpenIddict().AddValidation(options =>
             {

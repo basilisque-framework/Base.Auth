@@ -38,7 +38,7 @@ public static class AuthPersistenceExtensions
                 var connection = provider.GetRequiredService<IConnectionStringBuilder>().GetConnectionString(nameof(AuthDbContext), providerKey);
                 var migrationAssembly = services.GetRequiredService<IMigrationAssemblyResolver>()
                     .GetMigrationAssemblyName(typeof(LocalIdentityDbContext), providerKey)
-                    ?? throw new InvalidOperationException($"No local Identity migrations are registered for '{providerKey}'.");
+                    ?? throw new InvalidOperationException(Messages.MissingIdentityMigrations(providerKey));
 
                 identityProvider.Configure(options, connection, migrationAssembly, MigrationsHistoryTable);
             });

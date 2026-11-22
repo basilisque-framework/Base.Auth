@@ -2,6 +2,7 @@ using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using OpenIddict.Abstractions;
 using System.Net;
 using System.Net.Http;
@@ -132,6 +133,40 @@ public sealed class LocalUserTests
         using var response = await environment.Http.PostAsync("/test/sign-in", content: null);
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
+
+    /// <summary>Verifies that hosts can override a protocol description and retain the built-in translations for unhandled keys.</summary>
+    [Test]
+    [Arguments(false, "en", "Sign in to continue.")]
+    [Arguments(true, "de", "Melden Sie sich an, um fortzufahren.")]
+    [Arguments(true, "en", "Sign in to the staff portal.")]
+    public async Task Authorize_ShouldUseHostTextOrSatelliteFallback_WhenSignInIsRequired(bool replaceLocalizer,
+        string culture, string expected)
+    {
+        // Arrange
+        var custom = Substitute.For<IStringLocalizer<AuthProtocolMessages>>();
+        custom[AuthProtocolMessages.SignInRequired].Returns(_ => culture == "en"
+            ? new LocalizedString(AuthProtocolMessages.SignInRequired, "Sign in to the staff portal.")
+            : new LocalizedString(AuthProtocolMessages.SignInRequired, AuthProtocolMessages.SignInRequired, resourceNotFound: true));
+        await using var environment = await ProtocolTestEnvironment.CreateAsync(localUsers: true,
+            configureServices: replaceLocalizer ? services => services.AddSingleton(custom) : null);
+        await provisionAsync(environment);
+        using var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("/connect/authorize",
+            new Dictionary<string, string?>
+            {
+                ["client_id"] = ClientId, ["redirect_uri"] = Redirect, ["response_type"] = "code", ["scope"] = "openid api",
+                ["code_challenge"] = WebEncoders.Base64UrlEncode(SHA256.HashData(Encoding.ASCII.GetBytes(Verifier))),
+                ["code_challenge_method"] = "S256", ["prompt"] = "none"
+            }));
+        request.Headers.AcceptLanguage.ParseAdd(culture);
+
+        // Act
+        using var response = await environment.Http.SendAsync(request);
+
+        // Assert
+        var parameters = QueryHelpers.ParseQuery(response.Headers.Location?.Query);
+        await Assert.That(parameters["error"].ToString()).IsEqualTo(Errors.LoginRequired);
+        await Assert.That(parameters["error_description"].ToString()).IsEqualTo(expected);
     }
 
     private static async Task<string> provisionAsync(ProtocolTestEnvironment environment, string? contextId = ProtocolTestEnvironment.ContextId)

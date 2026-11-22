@@ -12,7 +12,7 @@ public sealed class RoleAssignment
         ArgumentException.ThrowIfNullOrWhiteSpace(subjectId);
         ArgumentException.ThrowIfNullOrWhiteSpace(scopeId);
         if (validFrom >= validUntil)
-            throw new ArgumentException("The end of the validity period must be later than its start.", nameof(validUntil));
+            throw new ArgumentException(Messages.InvalidAssignmentPeriod, nameof(validUntil));
 
         RoleId = roleId;
         ActorKind = actorKind;

@@ -21,7 +21,7 @@ public sealed class AccessToken
     public AccessToken(string value, DateTimeOffset? expiresAt)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("A token is required.", nameof(value));
+            throw new ArgumentException(Messages.TokenRequired, nameof(value));
 
         Value = value;
         ExpiresAt = expiresAt;

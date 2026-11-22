@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AssignedRoleNotFound" xml:space="preserve">
+    <value>Die zugewiesene Rolle existiert nicht.</value>
+  </data>
+  <data name="AssignmentRequiresKnownRole" xml:space="preserve">
+    <value>Jede Zuweisung muss auf eine bekannte Rolle verweisen.</value>
+  </data>
+  <data name="CannotDeleteObjectWithChildren" xml:space="preserve">
+    <value>Ein Berechtigungsobjekt mit untergeordneten Objekten kann nicht gelöscht werden.</value>
+  </data>
+  <data name="ConflictingRoleId" xml:space="preserve">
+    <value>Die Rollen-ID steht im Konflikt mit einer bestehenden Rolle.</value>
+  </data>
+  <data name="DiagnosticsUnavailable" xml:space="preserve">
+    <value>Der konfigurierte Berechtigungsauswerter stellt keine Diagnose bereit. Registrieren Sie eine passende IPermissionDiagnostics-Implementierung, um diesen Dienst zu nutzen.</value>
+  </data>
+  <data name="DisplayNameTooLong" xml:space="preserve">
+    <value>Anzeigenamen dürfen höchstens {0} Zeichen lang sein.</value>
+  </data>
+  <data name="DuplicateRoleRule" xml:space="preserve">
+    <value>Eine Rolle darf höchstens eine Regel pro Objekt und Aktion definieren.</value>
+  </data>
+  <data name="InvalidAssignmentPeriod" xml:space="preserve">
+    <value>Das Ende des Gültigkeitszeitraums muss nach dessen Beginn liegen.</value>
+  </data>
+  <data name="MoveWouldCreateCycle" xml:space="preserve">
+    <value>Durch das Verschieben würde ein Zyklus im Berechtigungskatalog entstehen.</value>
+  </data>
+  <data name="ObjectRequiresKnownType" xml:space="preserve">
+    <value>Jedes Berechtigungsobjekt muss auf einen bekannten Typ verweisen.</value>
+  </data>
+  <data name="ObjectTypeNotFound" xml:space="preserve">
+    <value>Der Berechtigungsobjekttyp existiert nicht.</value>
+  </data>
+  <data name="ParentRequiresKnownObject" xml:space="preserve">
+    <value>Jedes übergeordnete Objekt muss auf ein bekanntes Berechtigungsobjekt verweisen.</value>
+  </data>
+  <data name="PermissionHierarchyCycle" xml:space="preserve">
+    <value>Die Hierarchie der Berechtigungsobjekte darf keine Zyklen enthalten.</value>
+  </data>
+  <data name="PermissionKeyNotFound" xml:space="preserve">
+    <value>Der Berechtigungsschlüssel existiert nicht.</value>
+  </data>
+  <data name="PermissionObjectNotFound" xml:space="preserve">
+    <value>Das Berechtigungsobjekt existiert nicht.</value>
+  </data>
+  <data name="RemoveRulesBeforeDetachingActions" xml:space="preserve">
+    <value>Entfernen Sie zuerst die expliziten Rollenregeln für diese Aktionen auf Objekten dieses Typs.</value>
+  </data>
+  <data name="RuleRequiresSupportedAction" xml:space="preserve">
+    <value>Jede Regel muss auf ein bekanntes Objekt und eine unterstützte Aktion verweisen.</value>
+  </data>
+  <data name="StringKeyTooLong" xml:space="preserve">
+    <value>Zeichenfolgeschlüssel dürfen höchstens {0} Zeichen lang sein.</value>
+  </data>
+</root>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="CompatibilityUsage" xml:space="preserve">
+    <value>Aufruf: Compatibility &lt;protect|verify&gt; &lt;Schlüsselring-Verzeichnis&gt; &lt;Paketpfad&gt; &lt;XML-Pfad-des-öffentlichen-Schlüssels&gt;</value>
+  </data>
+  <data name="CrossFrameworkVerificationPassed" xml:space="preserve">
+    <value>Die Wiederherstellung des privaten Schlüssels und die Signaturprüfung über Frameworkgrenzen hinweg waren erfolgreich.</value>
+  </data>
+  <data name="ProtectedPackageCreated" xml:space="preserve">
+    <value>Geschütztes PKCS#8-Paket erstellt.</value>
+  </data>
+  <data name="RecoveredKeyIdentifierChanged" xml:space="preserve">
+    <value>Das geschützte Paket hat die Schlüsselkennung verändert.</value>
+  </data>
+  <data name="RecoveredKeyMismatch" xml:space="preserve">
+    <value>Aus dem geschützten Paket konnte der passende private Schlüssel nicht wiederhergestellt werden.</value>
+  </data>
+  <data name="UnknownCompatibilityOperation" xml:space="preserve">
+    <value>Unbekannter Kompatibilitätsvorgang.</value>
+  </data>
+</root>

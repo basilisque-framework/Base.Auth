@@ -1,5 +1,6 @@
 ﻿using OpenIddict.Abstractions;
 using OpenIddict.Server;
+using Microsoft.Extensions.Localization;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Basilisque.Base.Auth.Server.ClientAuth;
@@ -7,13 +8,15 @@ namespace Basilisque.Base.Auth.Server.ClientAuth;
 internal sealed class ClientAssertionReplayHandler : IOpenIddictServerHandler<OpenIddictServerEvents.ProcessAuthenticationContext>
 {
     private readonly IClientAssertionReplayStore _replayStore;
+    private readonly IStringLocalizer<AuthProtocolMessages> _localizer;
 
     /// <summary>
     /// Creates an assertion handler using the persistent replay store.
     /// </summary>
-    public ClientAssertionReplayHandler(IClientAssertionReplayStore replayStore)
+    public ClientAssertionReplayHandler(IClientAssertionReplayStore replayStore, IStringLocalizer<AuthProtocolMessages> localizer)
     {
         _replayStore = replayStore;
+        _localizer = localizer;
     }
 
     public async ValueTask HandleAsync(OpenIddictServerEvents.ProcessAuthenticationContext context)
@@ -32,7 +35,7 @@ internal sealed class ClientAssertionReplayHandler : IOpenIddictServerHandler<Op
             expiresAt - issuedAt > TimeSpan.FromMinutes(5) ||
             !await _replayStore.TryUseAsync(context.ClientId!, identifier, expiresAt.Value.AddSeconds(30), context.CancellationToken))
         {
-            context.Reject(Errors.InvalidClient, "The client assertion is invalid or has already been used.");
+            context.Reject(Errors.InvalidClient, AuthProtocolMessageLocalizer.Resolve(_localizer, AuthProtocolMessages.ClientAssertionInvalidOrReplayed));
         }
     }
 }

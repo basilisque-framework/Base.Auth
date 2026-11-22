@@ -29,10 +29,10 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
             throw new ArgumentNullException(nameof(privateKey));
 
         if (string.IsNullOrWhiteSpace(keyId))
-            throw new ArgumentException("A key identifier is required.", nameof(keyId));
+            throw new ArgumentException(Messages.KeyIdentifierRequired, nameof(keyId));
 
         if (privateKey.KeySize < 2048 || keyId.Length > 200)
-            throw new ArgumentException("Invalid RSA key or key identifier.");
+            throw new ArgumentException(Messages.InvalidKeyOrIdentifier);
 
         var material = exportPrivateKey(privateKey);
 
@@ -70,7 +70,7 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
             throw new ArgumentNullException(nameof(package));
 
         if (!package.StartsWith(Prefix, StringComparison.Ordinal) || package.Length > 100_000)
-            throw new CryptographicException("Unsupported private key package.");
+            throw new CryptographicException(Messages.UnsupportedPrivateKeyPackage);
 
         var plaintext = protector(protectionContext).Unprotect(Convert.FromBase64String(package.Substring(Prefix.Length)));
 
@@ -84,7 +84,7 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
             var length = reader.ReadInt32();
 
             if (keyId.Length is 0 or > 200 || length <= 0 || length != stream.Length - stream.Position)
-                throw new CryptographicException("Invalid private key package.");
+                throw new CryptographicException(Messages.InvalidPrivateKeyPackage);
 
             key = importPrivateKey(plaintext, (int)stream.Position, length);
 
@@ -104,7 +104,7 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
     private IDataProtector protector(string context)
     {
         if (string.IsNullOrWhiteSpace(context))
-            throw new ArgumentException("A protection context is required.", nameof(context));
+            throw new ArgumentException(Messages.ProtectionContextRequired, nameof(context));
 
         return _protectionProvider.CreateProtector("Basilisque.Base.Auth.Client.PrivateKeyPackage", "v1", context);
     }
@@ -156,7 +156,7 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
         try
         {
             key.ImportPkcs8PrivateKey(plaintext.AsSpan(offset, length), out var bytesRead);
-            if (bytesRead != length) throw new CryptographicException("Invalid private key package.");
+            if (bytesRead != length) throw new CryptographicException(Messages.InvalidPrivateKeyPackage);
             return key;
         }
         catch { key.Dispose(); throw; }

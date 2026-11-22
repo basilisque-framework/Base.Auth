@@ -14,7 +14,7 @@ public static class CertificateStoreCredentials
     public static ClientSigningCredential Load(string thumbprint, StoreLocation location = StoreLocation.CurrentUser)
     {
         if (string.IsNullOrWhiteSpace(thumbprint))
-            throw new ArgumentException("A thumbprint is required.", nameof(thumbprint));
+            throw new ArgumentException(Messages.ThumbprintRequired, nameof(thumbprint));
 
         using var store = new X509Store(StoreName.My, location);
         store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
@@ -30,14 +30,14 @@ public static class CertificateStoreCredentials
                     continue;
 
                 if (selected is not null)
-                    throw new CryptographicException("Multiple matching signing certificates were found.");
+                    throw new CryptographicException(Messages.MultipleMatchingSigningCertificates);
 
                 selected = certificate;
             }
 
             if (selected is null || DateTime.UtcNow < selected.NotBefore.ToUniversalTime() ||
                 DateTime.UtcNow >= selected.NotAfter.ToUniversalTime())
-                throw new CryptographicException("No currently valid signing certificate was found.");
+                throw new CryptographicException(Messages.NoValidSigningCertificate);
 
             var result = ClientSigningCredential.FromCertificate(selected, ownsCertificate: true);
             retained = selected; // Ownership transfers to the returned wrapper.

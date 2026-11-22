@@ -49,7 +49,7 @@ public sealed class LocalIdentityDbContext : IdentityUserContext<LocalUser, Guid
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         if (Interlocked.CompareExchange(ref _designTimeLifetime, lifetime, null) is not null)
-            throw new InvalidOperationException("A design-time lifetime has already been assigned.");
+            throw new InvalidOperationException(Messages.DesignTimeLifetimeAlreadyAssigned);
     }
 
     /// <inheritdoc />

@@ -38,15 +38,16 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
     internal readonly RSA ClientKey = RSA.Create(2048);
     internal HttpClient Http = null!;
 
-    internal static async Task<ProtocolTestEnvironment> CreateAsync(bool localUsers = false, string? machineContextId = ContextId)
+    internal static async Task<ProtocolTestEnvironment> CreateAsync(bool localUsers = false, string? machineContextId = ContextId,
+        Action<IServiceCollection>? configureServices = null)
     {
         var environment = new ProtocolTestEnvironment();
         try
-        { await environment.initializeAsync(localUsers, machineContextId); return environment; }
+        { await environment.initializeAsync(localUsers, machineContextId, configureServices); return environment; }
         catch { await environment.DisposeAsync(); throw; }
     }
 
-    private async Task initializeAsync(bool localUsers, string? machineContextId)
+    private async Task initializeAsync(bool localUsers, string? machineContextId, Action<IServiceCollection>? configureServices)
     {
         Directory.CreateDirectory(_directory);
         var builder = WebApplication.CreateBuilder();
@@ -67,6 +68,7 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
             builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
             builder.Services.AddBaseAuthLocalUsers().AddBaseAuthRelationalUserStore();
         }
+        configureServices?.Invoke(builder.Services);
         _application = builder.Build();
         await using (var scope = _application.Services.CreateAsyncScope())
         {
@@ -75,6 +77,8 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
                 await scope.ServiceProvider.GetRequiredService<LocalIdentityDbContext>().Database.MigrateAsync();
             await scope.ServiceProvider.GetRequiredService<IMachineClientRegistry>().RegisterAsync(ClientId, machineContextId, PublicKeys(ClientKey));
         }
+        _application.UseRequestLocalization(new RequestLocalizationOptions()
+            .SetDefaultCulture("en").AddSupportedCultures("en", "de").AddSupportedUICultures("en", "de"));
         _application.UseAuthentication();
         _application.UseAuthorization();
         _application.MapBaseAuthTokenEndpoint();

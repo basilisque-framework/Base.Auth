@@ -12,7 +12,7 @@ internal sealed class LocalUserContextValidator : IUserValidator<LocalUser>
             : IdentityResult.Failed(new IdentityError
             {
                 Code = "InvalidLocalUserContext",
-                Description = "An assigned context must contain between 1 and 256 characters and cannot be whitespace only."
+                Description = Messages.InvalidLocalUserContext
             }));
     }
 }

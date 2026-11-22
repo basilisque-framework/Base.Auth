@@ -1,16 +1,17 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
+@using Basilisque.Base.Auth.MachineService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @if ((await Context.AuthenticateAsync(IdentityConstants.ApplicationScheme)).Succeeded)
 {
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">My account</a>
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">@Messages.MyAccount</a>
         </li>
         <li class="nav-item">
             <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Identity/Account/Login" method="post">
-                <button type="submit" class="btn btn-link nav-link">Sign out</button>
+                <button type="submit" class="btn btn-link nav-link">@Messages.SignOut</button>
             </form>
         </li>
     </ul>

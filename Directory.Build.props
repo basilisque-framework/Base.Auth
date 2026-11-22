@@ -16,6 +16,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- Libraries are packed; executable hosts opt into publishing in their project files. -->
     <IsPublishable>false</IsPublishable>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <!-- project description -->

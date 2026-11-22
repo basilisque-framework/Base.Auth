@@ -21,12 +21,12 @@ internal sealed class RegisteredServiceActorFactory : IServiceActorFactory
     public async ValueTask<ClaimsPrincipal> CreateAsync(string clientId, CancellationToken cancellationToken = default)
     {
         var application = await _applications.FindByClientIdAsync(clientId, cancellationToken)
-            ?? throw new InvalidOperationException("The authenticated client registration no longer exists.");
+            ?? throw new InvalidOperationException(Messages.AuthenticatedClientRegistrationNotFound);
         var properties = await _applications.GetPropertiesAsync(application, cancellationToken);
         var subject = properties.TryGetValue(MachineClientRegistry.SubjectProperty, out var subjectValue) ? subjectValue.GetString() : null;
         var context = properties.TryGetValue(MachineClientRegistry.ContextProperty, out var contextValue) ? contextValue.GetString() : null;
         if (string.IsNullOrWhiteSpace(subject) || (context is not null && string.IsNullOrWhiteSpace(context)))
-            throw new InvalidOperationException("The client has invalid product identity metadata.");
+            throw new InvalidOperationException(Messages.InvalidProductIdentityMetadata);
 
         var identity = new ClaimsIdentity("Base.Auth", Claims.Name, Claims.Role);
         identity.SetClaim(Claims.Subject, subject);

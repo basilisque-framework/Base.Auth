@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AssignedRoleNotFound" xml:space="preserve">
+    <value>The assigned role does not exist.</value>
+  </data>
+  <data name="AssignmentRequiresKnownRole" xml:space="preserve">
+    <value>Every assignment must reference a known role.</value>
+  </data>
+  <data name="CannotDeleteObjectWithChildren" xml:space="preserve">
+    <value>A permission object with children cannot be deleted.</value>
+  </data>
+  <data name="ConflictingRoleId" xml:space="preserve">
+    <value>The role ID conflicts with an existing role.</value>
+  </data>
+  <data name="DiagnosticsUnavailable" xml:space="preserve">
+    <value>The configured permission evaluator does not provide diagnostics. Register a matching IPermissionDiagnostics implementation to use this service.</value>
+  </data>
+  <data name="DisplayNameTooLong" xml:space="preserve">
+    <value>Display names must be at most {0} characters long.</value>
+  </data>
+  <data name="DuplicateRoleRule" xml:space="preserve">
+    <value>A role may define at most one rule per object and action.</value>
+  </data>
+  <data name="InvalidAssignmentPeriod" xml:space="preserve">
+    <value>The end of the validity period must be later than its start.</value>
+  </data>
+  <data name="MoveWouldCreateCycle" xml:space="preserve">
+    <value>The move would create a cycle in the permission catalog.</value>
+  </data>
+  <data name="ObjectRequiresKnownType" xml:space="preserve">
+    <value>Every permission object must reference a known type.</value>
+  </data>
+  <data name="ObjectTypeNotFound" xml:space="preserve">
+    <value>The permission object type does not exist.</value>
+  </data>
+  <data name="ParentRequiresKnownObject" xml:space="preserve">
+    <value>Every parent must reference a known permission object.</value>
+  </data>
+  <data name="PermissionHierarchyCycle" xml:space="preserve">
+    <value>The permission object hierarchy must be acyclic.</value>
+  </data>
+  <data name="PermissionKeyNotFound" xml:space="preserve">
+    <value>The permission key does not exist.</value>
+  </data>
+  <data name="PermissionObjectNotFound" xml:space="preserve">
+    <value>The permission object does not exist.</value>
+  </data>
+  <data name="RemoveRulesBeforeDetachingActions" xml:space="preserve">
+    <value>Remove the explicit role rules for these actions on objects of this type before removing action support.</value>
+  </data>
+  <data name="RuleRequiresSupportedAction" xml:space="preserve">
+    <value>Every rule must reference a known object and a supported action.</value>
+  </data>
+  <data name="StringKeyTooLong" xml:space="preserve">
+    <value>String keys must be at most {0} characters long.</value>
+  </data>
+</root>

@@ -21,6 +21,19 @@ A modular authentication library based on OpenIddict. It provides machine-to-mac
 Client Credentials and `private_key_jwt`, product service identities, and API token validation.
 It also supports local user sign-in with ASP.NET Core Identity and Authorization Code with PKCE.
 
+Base.Auth messages use English by default and include German satellite assemblies.
+Set `CultureInfo.CurrentUICulture` in the host to select the language, or configure
+request localization for an ASP.NET Core host. The MachineService sample supports
+English and German requests. Framework messages and descriptions supplied by an
+external authorization server follow their respective sources.
+
+To override Base.Auth protocol error descriptions, register a closed
+`IStringLocalizer<AuthProtocolMessages>` in the host, for example
+`builder.Services.AddScoped<IStringLocalizer<AuthProtocolMessages>, PortalAuthLocalizer>()`.
+Use the keys on `Basilisque.Base.Auth.Server.AuthProtocolMessages`. Return a
+`LocalizedString` with `ResourceNotFound = true` for each key and culture that
+should use the built-in resources. Protocol error codes stay stable across cultures.
+
 [![NuGet Basilisque.Base.Auth.Client](https://img.shields.io/badge/NuGet_Basilisque.Base.Auth.Client-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.Base.Auth.Client)\
 [![NuGet Basilisque.Base.Auth.Server](https://img.shields.io/badge/NuGet_Basilisque.Base.Auth.Server-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.Base.Auth.Server)\
 [![NuGet Basilisque.Base.Auth.Abstractions](https://img.shields.io/badge/NuGet_Basilisque.Base.Auth.Abstractions-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.Base.Auth.Abstractions)\

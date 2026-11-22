@@ -8,6 +8,7 @@ using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,8 +27,8 @@ internal static class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.RegisterServices();
         builder.Services.AddBaseAuthRelationalPersistence();
-        var issuer = new Uri(builder.Configuration["Auth:Issuer"] ?? throw new InvalidOperationException("Auth:Issuer is required."));
-        var audience = builder.Configuration["Auth:Audience"] ?? throw new InvalidOperationException("Auth:Audience is required.");
+        var issuer = new Uri(builder.Configuration["Auth:Issuer"] ?? throw new InvalidOperationException(Messages.IssuerRequired));
+        var audience = builder.Configuration["Auth:Audience"] ?? throw new InvalidOperationException(Messages.AudienceRequired);
         builder.Services.AddBaseAuthServer(options =>
         {
             options.Issuer = issuer;
@@ -57,7 +58,7 @@ internal static class Program
         if (builder.Configuration.GetValue<bool>("initialize-database"))
         {
             if (!RuntimeFeature.IsDynamicCodeSupported)
-                throw new NotSupportedException("Apply database migrations separately before running this host with Native AOT.");
+                throw new NotSupportedException(Messages.MigrateBeforeNativeAot);
 
             await using var scope = app.Services.CreateAsyncScope();
             foreach (var initializer in scope.ServiceProvider.GetServices<IDbInitializer>())
@@ -67,7 +68,7 @@ internal static class Program
             return;
         var operationNames = new[] { "register-client", "replace-client-keys", "disable-client" };
         var selectedOperations = operationNames.Where(name => !string.IsNullOrWhiteSpace(builder.Configuration[name])).ToArray();
-        if (selectedOperations.Length > 1) throw new InvalidOperationException("Choose one client administration operation at a time.");
+        if (selectedOperations.Length > 1) throw new InvalidOperationException(Messages.OneClientAdministrationOperation);
         if (selectedOperations.Length == 1)
         {
             var operation = selectedOperations[0];
@@ -78,7 +79,7 @@ internal static class Program
                 await registry.DisableAsync(clientId);
             else
             {
-                var publicKeysPath = builder.Configuration["public-jwks"] ?? throw new InvalidOperationException("--public-jwks is required.");
+                var publicKeysPath = builder.Configuration["public-jwks"] ?? throw new InvalidOperationException(Messages.PublicJwksRequired);
                 var publicKeys = new JsonWebKeySet(await File.ReadAllTextAsync(publicKeysPath));
                 if (operation == "replace-client-keys") await registry.ReplacePublicKeysAsync(clientId, publicKeys);
                 else
@@ -87,16 +88,20 @@ internal static class Program
                     await registry.RegisterAsync(clientId, contextId, publicKeys);
                 }
             }
-            Console.WriteLine("Client administration completed. No private key was imported.");
+            Console.WriteLine(Messages.ClientAdministrationCompleted);
             return;
         }
         if (builder.Configuration.GetValue<bool>("prune-assertions"))
         {
             await using var scope = app.Services.CreateAsyncScope();
             var removed = await scope.ServiceProvider.GetRequiredService<AuthDbContext>().PruneExpiredAssertionsAsync();
-            Console.WriteLine($"Expired assertion markers removed: {removed}");
+            Console.WriteLine(Messages.ExpiredReplayMarkersRemoved(removed));
             return;
         }
+        app.UseRequestLocalization(new RequestLocalizationOptions()
+            .SetDefaultCulture("en")
+            .AddSupportedCultures("en", "de")
+            .AddSupportedUICultures("en", "de"));
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapBaseAuthTokenEndpoint();
@@ -113,7 +118,7 @@ internal static class Program
     private static X509Certificate2 loadCertificate(IConfiguration configuration, string purpose)
     {
         var path = configuration[$"Auth:{purpose}CertificatePath"]
-            ?? throw new InvalidOperationException($"Auth:{purpose}CertificatePath is required outside Development.");
+            ?? throw new InvalidOperationException(Messages.CertificatePathRequired(purpose));
         return X509CertificateLoader.LoadPkcs12FromFile(path, configuration[$"Auth:{purpose}CertificatePassword"],
             X509KeyStorageFlags.EphemeralKeySet);
     }

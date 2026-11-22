@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using OpenIddict.Abstractions;
@@ -36,17 +37,19 @@ public static class LocalUserEndpointRouteBuilderExtensions
             => endpoints.MapMethods(AuthorizationPath, [HttpMethods.Get, HttpMethods.Post], authorizeAsync).AllowAnonymous();
     }
 
-    private static async Task<IResult> authorizeAsync(HttpContext context, SignInManager<LocalUser> signIn, ILocalUserAdmission admission, IOptions<AuthServerOptions> options, IOpenIddictApplicationManager applications)
+    private static async Task<IResult> authorizeAsync(HttpContext context, SignInManager<LocalUser> signIn,
+        ILocalUserAdmission admission, IOptions<AuthServerOptions> options, IOpenIddictApplicationManager applications,
+        IStringLocalizer<AuthProtocolMessages> localizer)
     {
-        var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("The OpenIddict middleware did not process this request.");
+        var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException(Messages.RequestNotProcessedByMiddleware);
 
         var application = await applications.FindByClientIdAsync(request.ClientId!, context.RequestAborted);
 
         if (application is null || !await applications.HasConsentTypeAsync(application, ConsentTypes.Implicit, context.RequestAborted))
-            return protocolError(Errors.ConsentRequired, "This client is not provisioned for first-party sign-in.");
+            return protocolError(Errors.ConsentRequired, localizer, AuthProtocolMessages.ClientNotProvisionedForFirstPartySignIn);
 
         if (request.HasPromptValue(PromptValues.Consent))
-            return protocolError(Errors.ConsentRequired, "Interactive client consent is not available.");
+            return protocolError(Errors.ConsentRequired, localizer, AuthProtocolMessages.InteractiveConsentUnavailable);
 
         var authentication = await context.AuthenticateAsync(IdentityConstants.ApplicationScheme);
         var issuedAt = authentication.Properties?.IssuedUtc;
@@ -57,7 +60,7 @@ public static class LocalUserEndpointRouteBuilderExtensions
         if (user is null)
         {
             if (request.HasPromptValue(PromptValues.None))
-                return protocolError(Errors.LoginRequired, "Sign in to continue.");
+                return protocolError(Errors.LoginRequired, localizer, AuthProtocolMessages.SignInRequired);
 
             var returnPath = context.Request.PathBase + context.Request.Path;
             var query = new QueryString();
@@ -89,7 +92,7 @@ public static class LocalUserEndpointRouteBuilderExtensions
 
         var actor = await signIn.CanSignInAsync(user) ? await admission.ResolveAsync(user, context.RequestAborted) : null;
         if (actor is null)
-            return protocolError(Errors.AccessDenied, "The account has no access to this product.");
+            return protocolError(Errors.AccessDenied, localizer, AuthProtocolMessages.ProductAccessDenied);
 
         var identity = new ClaimsIdentity("Base.Auth", Claims.Name, Claims.Role);
         identity.SetClaim(Claims.Subject, actor.SubjectId);
@@ -117,7 +120,8 @@ public static class LocalUserEndpointRouteBuilderExtensions
         return Results.SignIn(principal, authenticationScheme: ProtocolScheme);
     }
 
-    internal static async Task<IResult> ExchangeCodeAsync(HttpContext context, SignInManager<LocalUser> signIn, ILocalUserAdmission admission)
+    internal static async Task<IResult> ExchangeCodeAsync(HttpContext context, SignInManager<LocalUser> signIn,
+        ILocalUserAdmission admission, IStringLocalizer<AuthProtocolMessages> localizer)
     {
         var authentication = await context.AuthenticateAsync(ProtocolScheme);
         var principal = authentication.Principal;
@@ -125,7 +129,7 @@ public static class LocalUserEndpointRouteBuilderExtensions
         if (!authentication.Succeeded || principal is null || principal.GetClaim(BaseAuthClaims.ActorKind) != BaseAuthClaims.User ||
             principal.GetClaim(Claims.Subject) is not { } subject ||
             principal.GetClaim(LocalAccountIdClaim) is not { } accountId)
-            return protocolError(Errors.InvalidGrant, "The authorization code is invalid.");
+            return protocolError(Errors.InvalidGrant, localizer, AuthProtocolMessages.InvalidAuthorizationCode);
 
         var user = await signIn.UserManager.FindByIdAsync(accountId);
         var actor = user is not null && await signIn.CanSignInAsync(user)
@@ -135,15 +139,15 @@ public static class LocalUserEndpointRouteBuilderExtensions
         if (actor is null || user is null || actor.SubjectId != subject ||
             actor.ContextId != principal.GetClaim(BaseAuthClaims.ContextId) ||
             principal.GetClaim(SecurityStampClaim) != await signIn.UserManager.GetSecurityStampAsync(user))
-            return protocolError(Errors.InvalidGrant, "The account is no longer authorized.");
+            return protocolError(Errors.InvalidGrant, localizer, AuthProtocolMessages.AccountNoLongerAuthorized);
 
         return Results.SignIn(principal, authenticationScheme: ProtocolScheme);
     }
 
-    private static IResult protocolError(string error, string description)
+    private static IResult protocolError(string error, IStringLocalizer<AuthProtocolMessages> localizer, string key)
         => Results.Forbid(new AuthenticationProperties(new Dictionary<string, string?>
         {
             [OpenIddictServerAspNetCoreConstants.Properties.Error] = error,
-            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = description
+            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = AuthProtocolMessageLocalizer.Resolve(localizer, key)
         }), [ProtocolScheme]);
 }

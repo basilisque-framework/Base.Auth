@@ -53,7 +53,7 @@ internal sealed class OpenIddictTokenEndpointClient : ITokenEndpointClient
         };
         await dispatcher.DispatchAsync(context).ConfigureAwait(false);
         if (context.IsRejected)
-            throw new ProtocolException("The token request failed.", context.Error, context.ErrorDescription, context.ErrorUri);
+            throw new ProtocolException(Messages.TokenRequestFailed, context.Error, context.ErrorDescription, context.ErrorUri);
 
         return new AccessToken(context.BackchannelAccessToken!, context.BackchannelAccessTokenExpirationDate);
     }

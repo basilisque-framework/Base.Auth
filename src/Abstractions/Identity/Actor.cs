@@ -26,11 +26,11 @@ public sealed class Actor
     public Actor(string subjectId, string kind, string? contextId = null)
     {
         if (string.IsNullOrWhiteSpace(subjectId))
-            throw new ArgumentException("A subject is required.", nameof(subjectId));
+            throw new ArgumentException(Messages.SubjectRequired, nameof(subjectId));
         if (string.IsNullOrWhiteSpace(kind))
-            throw new ArgumentException("An actor kind is required.", nameof(kind));
+            throw new ArgumentException(Messages.ActorKindRequired, nameof(kind));
         if (contextId is not null && string.IsNullOrWhiteSpace(contextId))
-            throw new ArgumentException("A context must contain a value when specified.", nameof(contextId));
+            throw new ArgumentException(Messages.ContextMustHaveValue, nameof(contextId));
 
         SubjectId = subjectId;
         Kind = kind;

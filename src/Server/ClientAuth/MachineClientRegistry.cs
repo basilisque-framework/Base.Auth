@@ -32,7 +32,7 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
             ArgumentException.ThrowIfNullOrWhiteSpace(contextId);
         validatePublicKeys(publicKeys);
         if (await _applications.FindByClientIdAsync(clientId, cancellationToken) is not null)
-            throw new InvalidOperationException("The client already exists. Use an explicit key rotation operation.");
+            throw new InvalidOperationException(Messages.ClientAlreadyExists);
 
         var descriptor = new OpenIddictApplicationDescriptor
         {
@@ -73,13 +73,13 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
 
     private async ValueTask<object> findAsync(string clientId, CancellationToken cancellationToken) =>
         await _applications.FindByClientIdAsync(clientId, cancellationToken)
-        ?? throw new InvalidOperationException("The client does not exist.");
+        ?? throw new InvalidOperationException(Messages.ClientNotFound);
 
     private static void validatePublicKeys(JsonWebKeySet publicKeys)
     {
         ArgumentNullException.ThrowIfNull(publicKeys);
         if (publicKeys.Keys.Count == 0 || publicKeys.Keys.Count > 10)
-            throw new ArgumentException("Between one and ten public keys are required.", nameof(publicKeys));
+            throw new ArgumentException(Messages.InvalidPublicKeyCount, nameof(publicKeys));
         var identifiers = new HashSet<string>(StringComparer.Ordinal);
         foreach (var key in publicKeys.Keys)
         {
@@ -88,13 +88,13 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
                 !string.IsNullOrEmpty(key.QI) || !string.IsNullOrEmpty(key.K) ||
                 key.Kty != JsonWebAlgorithmsKeyTypes.RSA && key.Kty != JsonWebAlgorithmsKeyTypes.EllipticCurve ||
                 string.IsNullOrWhiteSpace(key.Kid) || !identifiers.Add(key.Kid))
-                throw new ArgumentException("Only public RSA/EC keys with distinct key identifiers are accepted.", nameof(publicKeys));
+                throw new ArgumentException(Messages.InvalidPublicKeys, nameof(publicKeys));
             if (key.Kty == JsonWebAlgorithmsKeyTypes.RSA &&
                 (string.IsNullOrEmpty(key.N) || string.IsNullOrEmpty(key.E) || Base64UrlEncoder.DecodeBytes(key.N).Length < 256))
-                throw new ArgumentException("An RSA public key with at least 2048 bits is required.", nameof(publicKeys));
+                throw new ArgumentException(Messages.RsaPublicKeyTooShort, nameof(publicKeys));
             if (key.Kty == JsonWebAlgorithmsKeyTypes.EllipticCurve &&
                 (key.Crv is not ("P-256" or "P-384" or "P-521") || string.IsNullOrEmpty(key.X) || string.IsNullOrEmpty(key.Y)))
-                throw new ArgumentException("A supported EC public key is required.", nameof(publicKeys));
+                throw new ArgumentException(Messages.UnsupportedEcPublicKey, nameof(publicKeys));
             if (key.Kty == JsonWebAlgorithmsKeyTypes.RSA)
             {
                 using var rsa = RSA.Create();
@@ -104,7 +104,7 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
                     Exponent = Base64UrlEncoder.DecodeBytes(key.E)
                 });
                 if (rsa.KeySize < 2048)
-                    throw new ArgumentException("An RSA public key with at least 2048 bits is required.", nameof(publicKeys));
+                    throw new ArgumentException(Messages.RsaPublicKeyTooShort, nameof(publicKeys));
             }
         }
     }

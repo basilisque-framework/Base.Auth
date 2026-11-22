@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AccountNoLongerAuthorized" xml:space="preserve">
+    <value>Das Konto ist nicht mehr autorisiert.</value>
+  </data>
+  <data name="AmbiguousProductIdentity" xml:space="preserve">
+    <value>Die Identität enthält keine eindeutige Produktidentität.</value>
+  </data>
+  <data name="AuthenticatedClientNotFound" xml:space="preserve">
+    <value>Der authentifizierte Client existiert nicht mehr.</value>
+  </data>
+  <data name="AuthenticatedClientRegistrationNotFound" xml:space="preserve">
+    <value>Die Registrierung des authentifizierten Clients existiert nicht mehr.</value>
+  </data>
+  <data name="ClientAlreadyExists" xml:space="preserve">
+    <value>Der Client existiert bereits. Verwenden Sie den Vorgang zur Schlüsselrotation.</value>
+  </data>
+  <data name="ClientAssertionInvalidOrReplayed" xml:space="preserve">
+    <value>Die Client-Assertion ist ungültig oder wurde bereits verwendet.</value>
+  </data>
+  <data name="ClientNotFound" xml:space="preserve">
+    <value>Der Client existiert nicht.</value>
+  </data>
+  <data name="ClientNotProvisionedForFirstPartySignIn" xml:space="preserve">
+    <value>Dieser Client ist nicht für die direkte Anmeldung eingerichtet.</value>
+  </data>
+  <data name="HttpsAuthorityRequired" xml:space="preserve">
+    <value>Eine HTTPS-Autorität ist erforderlich.</value>
+  </data>
+  <data name="InteractiveConsentUnavailable" xml:space="preserve">
+    <value>Eine interaktive Einwilligung für den Client ist nicht verfügbar.</value>
+  </data>
+  <data name="InvalidAuthorizationCode" xml:space="preserve">
+    <value>Der Autorisierungscode ist ungültig.</value>
+  </data>
+  <data name="InvalidAuthServerOptions" xml:space="preserve">
+    <value>Ein gültiger HTTPS-Aussteller, eine Zielgruppe, ein API-Scope, ein Endpunkt und eine Gültigkeitsdauer sind erforderlich.</value>
+  </data>
+  <data name="InvalidProductIdentityMetadata" xml:space="preserve">
+    <value>Die Metadaten zur Produktidentität des Clients sind ungültig.</value>
+  </data>
+  <data name="InvalidPublicKeyCount" xml:space="preserve">
+    <value>Es sind ein bis zehn öffentliche Schlüssel erforderlich.</value>
+  </data>
+  <data name="InvalidPublicKeys" xml:space="preserve">
+    <value>Es werden nur öffentliche RSA- oder EC-Schlüssel mit eindeutigen Schlüsselkennungen akzeptiert.</value>
+  </data>
+  <data name="PrincipalNotAuthenticated" xml:space="preserve">
+    <value>Die Identität ist nicht authentifiziert.</value>
+  </data>
+  <data name="ProductAccessDenied" xml:space="preserve">
+    <value>Das Konto hat keinen Zugriff auf dieses Produkt.</value>
+  </data>
+  <data name="RequestNotProcessedByMiddleware" xml:space="preserve">
+    <value>Die OpenIddict-Middleware hat diese Anfrage nicht verarbeitet.</value>
+  </data>
+  <data name="RequestNotProcessedByServerMiddleware" xml:space="preserve">
+    <value>Die OpenIddict-Servermiddleware hat diese Anfrage nicht verarbeitet.</value>
+  </data>
+  <data name="RsaPublicKeyTooShort" xml:space="preserve">
+    <value>Ein öffentlicher RSA-Schlüssel mit mindestens 2048 Bit ist erforderlich.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Melden Sie sich an, um fortzufahren.</value>
+  </data>
+  <data name="UnsupportedEcPublicKey" xml:space="preserve">
+    <value>Ein unterstützter öffentlicher EC-Schlüssel ist erforderlich.</value>
+  </data>
+  <data name="InvalidLocalUserContext" xml:space="preserve">
+    <value>Ein zugewiesener Kontext muss 1 bis 256 Zeichen enthalten und darf nicht nur aus Leerraum bestehen.</value>
+  </data>
+</root>

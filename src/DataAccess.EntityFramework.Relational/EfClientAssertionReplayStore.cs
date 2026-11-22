@@ -9,6 +9,8 @@ namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 
 internal sealed class EfClientAssertionReplayStore : IClientAssertionReplayStore
 {
+    private static readonly EventId _pruningFailedEvent = new(1001, nameof(Messages.ReplayMarkerPruningFailed));
+
     private readonly AuthDbContext _database;
     private readonly PruningSchedule _pruningSchedule;
     private readonly ILogger<EfClientAssertionReplayStore> _logger;
@@ -55,7 +57,7 @@ internal sealed class EfClientAssertionReplayStore : IClientAssertionReplayStore
             }
             catch (Exception exception)
             {
-                _logger.LogWarning(exception, "Failed to prune expired client assertion replay markers.");
+                _logger.LogWarning(_pruningFailedEvent, exception, Messages.ReplayMarkerPruningFailed);
             }
         }
 

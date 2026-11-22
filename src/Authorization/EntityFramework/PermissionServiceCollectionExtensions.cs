@@ -17,7 +17,7 @@ internal static class PermissionServiceCollectionExtensions
         services.TryAddScoped<IPermissionEvaluator, EfPermissionEvaluator>();
         services.TryAddScoped<IPermissionDiagnostics>(provider =>
             provider.GetRequiredService<IPermissionEvaluator>() as IPermissionDiagnostics
-            ?? throw new InvalidOperationException("The configured permission evaluator does not provide diagnostics. Register a matching IPermissionDiagnostics implementation to use this service."));
+            ?? throw new InvalidOperationException(Messages.DiagnosticsUnavailable));
     }
 
     private sealed class PermissionContextFactory : IDbContextFactory<PermissionDbContext>

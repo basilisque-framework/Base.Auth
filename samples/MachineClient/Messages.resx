@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AuthorityAndApiRequireHttps" xml:space="preserve">
+    <value>Authority and API must use HTTPS.</value>
+  </data>
+  <data name="ClientCertificatePassword" xml:space="preserve">
+    <value>Supply the PFX password using BASE_AUTH_CLIENT_CERTIFICATE_PASSWORD.</value>
+  </data>
+  <data name="ExpectedCachedToken" xml:space="preserve">
+    <value>The reference client expected its freshly acquired token to be cached.</value>
+  </data>
+  <data name="ExpectedServiceActor" xml:space="preserve">
+    <value>The reference API did not return a service actor.</value>
+  </data>
+  <data name="MachineClientFailed" xml:space="preserve">
+    <value>Machine client failed ({0}).</value>
+  </data>
+  <data name="MachineClientUsage" xml:space="preserve">
+    <value>Usage: MachineClient &lt;authority&gt; &lt;client-id&gt; &lt;client-certificate.pfx&gt; &lt;https-api-url&gt; [scope]</value>
+  </data>
+  <data name="ServiceAuthenticated" xml:space="preserve">
+    <value>Authenticated service {0} in context {1}.</value>
+  </data>
+</root>

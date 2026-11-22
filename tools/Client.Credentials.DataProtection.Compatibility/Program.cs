@@ -14,7 +14,7 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        if (args.Length != 4) throw new ArgumentException("Usage: Compatibility <protect|verify> <key-ring-directory> <package-path> <public-key-xml-path>");
+        if (args.Length != 4) throw new ArgumentException(Messages.CompatibilityUsage);
         var protection = DataProtectionProvider.Create(new DirectoryInfo(args[1]), options =>
             options.SetApplicationName("Base.Auth.Compatibility").ProtectKeysWithDpapi());
         var packages = new DataProtectionPrivateKeyPackages(protection);
@@ -28,10 +28,10 @@ internal static class Program
 #endif
             File.WriteAllText(args[3], key.ToXmlString(includePrivateParameters: false));
             File.WriteAllText(args[2], packages.Protect(key, "compatibility-key", "compatibility/client"));
-            Console.WriteLine("Protected PKCS#8 package created.");
+            Console.WriteLine(Messages.ProtectedPackageCreated);
             return 0;
         }
-        if (args[0] != "verify") throw new ArgumentException("Unknown compatibility operation.");
+        if (args[0] != "verify") throw new ArgumentException(Messages.UnknownCompatibilityOperation);
 
         using var credential = packages.Load(File.ReadAllText(args[2]), "compatibility/client");
         var privateKey = (RsaSecurityKey)credential.Credentials.Key;
@@ -40,10 +40,10 @@ internal static class Program
         using var verifier = RSA.Create();
         verifier.FromXmlString(File.ReadAllText(args[3]));
         if (!verifier.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1))
-            throw new CryptographicException("The protected package did not recover the matching private key.");
+            throw new CryptographicException(Messages.RecoveredKeyMismatch);
         if (credential.Credentials.Key.KeyId != "compatibility-key")
-            throw new CryptographicException("The protected package changed the key identifier.");
-        Console.WriteLine("Cross-framework private-key recovery and signature verification passed.");
+            throw new CryptographicException(Messages.RecoveredKeyIdentifierChanged);
+        Console.WriteLine(Messages.CrossFrameworkVerificationPassed);
         return 0;
     }
 

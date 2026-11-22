@@ -15,8 +15,8 @@ internal static class Program
     {
         if (args.Length is < 4 or > 5)
         {
-            Console.Error.WriteLine("Usage: MachineClient <authority> <client-id> <client-certificate.pfx> <https-api-url> [scope]");
-            Console.Error.WriteLine("Supply the PFX password using BASE_AUTH_CLIENT_CERTIFICATE_PASSWORD.");
+            Console.Error.WriteLine(Messages.MachineClientUsage);
+            Console.Error.WriteLine(Messages.ClientCertificatePassword);
             return 1;
         }
 
@@ -25,7 +25,7 @@ internal static class Program
             var authority = new Uri(args[0], UriKind.Absolute);
             var api = new Uri(args[3], UriKind.Absolute);
             if (authority.Scheme != Uri.UriSchemeHttps || api.Scheme != Uri.UriSchemeHttps)
-                throw new ArgumentException("Authority and API must use HTTPS.");
+                throw new ArgumentException(Messages.AuthorityAndApiRequireHttps);
 
             using var certificate = loadCertificate(args[2]);
             var services = new ServiceCollection();
@@ -43,7 +43,7 @@ internal static class Program
             var token = await tokens.GetAccessTokenAsync("sync", cancellation.Token).ConfigureAwait(false);
             var cachedToken = await tokens.GetAccessTokenAsync("sync", cancellation.Token).ConfigureAwait(false);
             if (token.Value != cachedToken.Value)
-                throw new InvalidOperationException("The reference client expected its freshly acquired token to be cached.");
+                throw new InvalidOperationException(Messages.ExpectedCachedToken);
 
             // Business HTTP remains in the application. No API transport is hidden in Base.Auth.
             using var handler = new HttpClientHandler { AllowAutoRedirect = false };
@@ -55,15 +55,15 @@ internal static class Program
             using var actor = JsonDocument.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             var identity = actor.RootElement;
             if (identity.GetProperty("kind").GetString() != "service")
-                throw new InvalidOperationException("The reference API did not return a service actor.");
-            Console.WriteLine("Authenticated service {0} in context {1}.",
+                throw new InvalidOperationException(Messages.ExpectedServiceActor);
+            Console.WriteLine(Messages.ServiceAuthenticated,
                 identity.GetProperty("subjectId").GetString(), identity.GetProperty("contextId").GetString());
             return 0;
         }
         catch (Exception exception)
         {
             // Protocol exception text can contain remote response data. Do not log it or bearer tokens.
-            Console.Error.WriteLine("Machine client failed ({0}).", exception.GetType().Name);
+            Console.Error.WriteLine(Messages.MachineClientFailed, exception.GetType().Name);
             return 1;
         }
     }

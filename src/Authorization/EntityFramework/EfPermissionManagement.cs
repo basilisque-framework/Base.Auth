@@ -48,12 +48,12 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             var type = await database.ObjectTypes.Include(item => item.Actions)
                 .SingleOrDefaultAsync(item => item.Key == typeId, cancellationToken);
             if (type?.Key != typeId)
-                throw new ArgumentException("The permission object type does not exist.", nameof(typeId));
+                throw new ArgumentException(Messages.ObjectTypeNotFound, nameof(typeId));
 
             var removed = type.Actions.Where(action => !desired.Contains(action.Key)).Select(action => action.Id).ToArray();
             if (removed.Length > 0 && await database.Rules.AnyAsync(
                 rule => rule.Object.TypeId == type.Id && removed.Contains(rule.ActionId), cancellationToken))
-                throw new InvalidOperationException("Remove the explicit role rules for these actions on objects of this type before removing action support.");
+                throw new InvalidOperationException(Messages.RemoveRulesBeforeDetachingActions);
 
             type.Actions.RemoveAll(action => !desired.Contains(action.Key));
             await addMissingActions(database, type, desired, cancellationToken);
@@ -94,7 +94,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
         {
             var type = await findByKey(database.ObjectTypes, permissionObject.TypeId, cancellationToken);
             if (type is null)
-                throw new ArgumentException("The permission object type does not exist.", nameof(permissionObject));
+                throw new ArgumentException(Messages.ObjectTypeNotFound, nameof(permissionObject));
 
             var parent = permissionObject.ParentId is { } parentId
                 ? await requireObject(database, parentId, cancellationToken) : null;
@@ -130,7 +130,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
         return _database.InTransaction(async database =>
         {
             var entity = await findByKey(database.Set<TEntity>(), key, cancellationToken)
-                ?? throw new ArgumentException("The permission key does not exist.", nameof(key));
+                ?? throw new ArgumentException(Messages.PermissionKeyNotFound, nameof(key));
             entity.Key = newKey;
             return await database.SaveChangesAsync(cancellationToken);
         }, cancellationToken);
@@ -154,7 +154,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
         return _database.InTransaction(async database =>
         {
             var entity = await findByKey(database.Set<TEntity>(), key, cancellationToken)
-                ?? throw new ArgumentException("The permission key does not exist.", nameof(key));
+                ?? throw new ArgumentException(Messages.PermissionKeyNotFound, nameof(key));
             entity.SourceKey = sourceKey;
             entity.Hidden = hidden;
             return await database.SaveChangesAsync(cancellationToken);
@@ -187,7 +187,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
         return _database.InTransaction(async database =>
         {
             var entity = await findByKey(database.Set<TEntity>(), key, cancellationToken)
-                ?? throw new ArgumentException("The permission key does not exist.", nameof(key));
+                ?? throw new ArgumentException(Messages.PermissionKeyNotFound, nameof(key));
             entity.DisplayName = label;
             return await database.SaveChangesAsync(cancellationToken);
         }, cancellationToken);
@@ -201,7 +201,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             for (var ancestor = parent; ancestor is not null;)
             {
                 if (ancestor.Id == permissionObject.Id)
-                    throw new ArgumentException("The move would create a cycle in the permission catalog.", nameof(parentId));
+                    throw new ArgumentException(Messages.MoveWouldCreateCycle, nameof(parentId));
 
                 ancestor = ancestor.ParentId is Guid ancestorId
                     ? await database.Objects.FindAsync([ancestorId], cancellationToken) : null;
@@ -220,7 +220,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
                 return false;
 
             if (await database.Objects.AnyAsync(child => child.ParentId == permissionObject.Id, cancellationToken))
-                throw new InvalidOperationException("A permission object with children cannot be deleted.");
+                throw new InvalidOperationException(Messages.CannotDeleteObjectWithChildren);
 
             database.Objects.Remove(permissionObject);
             await database.SaveChangesAsync(cancellationToken);
@@ -263,7 +263,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
                 {
                     var action = catalog.GetValueOrDefault(objectId)?.Type.Actions.SingleOrDefault(item => item.Key == actionId);
                     if (action is null)
-                        throw new ArgumentException("Every rule must reference a known object and a supported action.", nameof(role));
+                        throw new ArgumentException(Messages.RuleRequiresSupportedAction, nameof(role));
 
                     resolved.Add((catalog[objectId].Id, action.Id), rule.Effect);
                 }
@@ -278,7 +278,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             }
             else if (storedRole.Key != role.Id)
             {
-                throw new ArgumentException("The role ID conflicts with an existing role.", nameof(role));
+                throw new ArgumentException(Messages.ConflictingRoleId, nameof(role));
             }
 
             var existing = storedRole.Rules.ToDictionary(rule => (rule.ObjectId, rule.ActionId));
@@ -344,7 +344,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
 
             var role = await findByKey(database.Roles, assignment.RoleId, cancellationToken);
             if (role is null)
-                throw new ArgumentException("The assigned role does not exist.", nameof(assignment));
+                throw new ArgumentException(Messages.AssignedRoleNotFound, nameof(assignment));
 
             database.Assignments.Add(new StoredAssignment
             {
@@ -383,7 +383,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
     {
         validateStringKey(objectId);
         return await findByKey(database.Objects, objectId, cancellationToken)
-            ?? throw new ArgumentException("The permission object does not exist.", nameof(objectId));
+            ?? throw new ArgumentException(Messages.PermissionObjectNotFound, nameof(objectId));
     }
 
     private static async Task<TEntity?> findByKey<TEntity>(DbSet<TEntity> entities, string key, CancellationToken cancellationToken)
@@ -400,7 +400,7 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             return null;
 
         if (displayName.Length > PermissionDbContext.MaxDisplayNameLength)
-            throw new ArgumentException($"Display names must be at most {PermissionDbContext.MaxDisplayNameLength} characters long.", nameof(displayName));
+            throw new ArgumentException(Messages.DisplayNameTooLong(PermissionDbContext.MaxDisplayNameLength), nameof(displayName));
 
         return displayName;
     }
@@ -409,6 +409,6 @@ internal sealed class EfPermissionManagement : IPermissionManagement
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
         if (id.Length > PermissionDbContext.MaxStringKeyLength)
-            throw new ArgumentException($"String keys must be at most {PermissionDbContext.MaxStringKeyLength} characters long.", nameof(id));
+            throw new ArgumentException(Messages.StringKeyTooLong(PermissionDbContext.MaxStringKeyLength), nameof(id));
     }
 }

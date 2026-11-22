@@ -25,7 +25,7 @@ internal sealed class CachedAccessTokenProvider : IAccessTokenProvider, IDisposa
     public async Task<AccessToken> GetAccessTokenAsync(string registrationName, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(registrationName))
-            throw new ArgumentException("A registration name is required.", nameof(registrationName));
+            throw new ArgumentException(Messages.RegistrationNameRequired, nameof(registrationName));
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -48,7 +48,7 @@ internal sealed class CachedAccessTokenProvider : IAccessTokenProvider, IDisposa
         // Named options validate before creating cache entries, so arbitrary names cannot grow the cache.
         var settings = _options.Get(registrationName);
         if (!settings.IsValid())
-            throw new InvalidOperationException("The machine client is not configured.");
+            throw new InvalidOperationException(Messages.MachineClientNotConfigured);
 
         Task<AccessToken> request() => requestTokenAsync(() => _client.RequestAsync(registrationName, cancellationToken));
         return settings.CacheAccessTokens
@@ -62,7 +62,7 @@ internal sealed class CachedAccessTokenProvider : IAccessTokenProvider, IDisposa
         var token = await request().ConfigureAwait(false);
 
         if (token.ExpiresAt <= DateTimeOffset.UtcNow)
-            throw new InvalidOperationException("The authorization server returned an expired token.");
+            throw new InvalidOperationException(Messages.ExpiredTokenReturned);
 
         return token;
     }

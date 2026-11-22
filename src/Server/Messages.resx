@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AccountNoLongerAuthorized" xml:space="preserve">
+    <value>The account is no longer authorized.</value>
+  </data>
+  <data name="AmbiguousProductIdentity" xml:space="preserve">
+    <value>The principal does not contain an unambiguous product identity.</value>
+  </data>
+  <data name="AuthenticatedClientNotFound" xml:space="preserve">
+    <value>The authenticated client no longer exists.</value>
+  </data>
+  <data name="AuthenticatedClientRegistrationNotFound" xml:space="preserve">
+    <value>The authenticated client registration no longer exists.</value>
+  </data>
+  <data name="ClientAlreadyExists" xml:space="preserve">
+    <value>The client already exists. Use an explicit key rotation operation.</value>
+  </data>
+  <data name="ClientAssertionInvalidOrReplayed" xml:space="preserve">
+    <value>The client assertion is invalid or has already been used.</value>
+  </data>
+  <data name="ClientNotFound" xml:space="preserve">
+    <value>The client does not exist.</value>
+  </data>
+  <data name="ClientNotProvisionedForFirstPartySignIn" xml:space="preserve">
+    <value>This client is not provisioned for first-party sign-in.</value>
+  </data>
+  <data name="HttpsAuthorityRequired" xml:space="preserve">
+    <value>An HTTPS authority is required.</value>
+  </data>
+  <data name="InteractiveConsentUnavailable" xml:space="preserve">
+    <value>Interactive client consent is not available.</value>
+  </data>
+  <data name="InvalidAuthorizationCode" xml:space="preserve">
+    <value>The authorization code is invalid.</value>
+  </data>
+  <data name="InvalidAuthServerOptions" xml:space="preserve">
+    <value>Valid HTTPS issuer, audience, API scope, endpoint and lifetime are required.</value>
+  </data>
+  <data name="InvalidProductIdentityMetadata" xml:space="preserve">
+    <value>The client has invalid product identity metadata.</value>
+  </data>
+  <data name="InvalidPublicKeyCount" xml:space="preserve">
+    <value>Between one and ten public keys are required.</value>
+  </data>
+  <data name="InvalidPublicKeys" xml:space="preserve">
+    <value>Only public RSA/EC keys with distinct key identifiers are accepted.</value>
+  </data>
+  <data name="PrincipalNotAuthenticated" xml:space="preserve">
+    <value>The principal is not authenticated.</value>
+  </data>
+  <data name="ProductAccessDenied" xml:space="preserve">
+    <value>The account has no access to this product.</value>
+  </data>
+  <data name="RequestNotProcessedByMiddleware" xml:space="preserve">
+    <value>The OpenIddict middleware did not process this request.</value>
+  </data>
+  <data name="RequestNotProcessedByServerMiddleware" xml:space="preserve">
+    <value>The OpenIddict server middleware did not process this request.</value>
+  </data>
+  <data name="RsaPublicKeyTooShort" xml:space="preserve">
+    <value>An RSA public key with at least 2048 bits is required.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Sign in to continue.</value>
+  </data>
+  <data name="UnsupportedEcPublicKey" xml:space="preserve">
+    <value>A supported EC public key is required.</value>
+  </data>
+  <data name="InvalidLocalUserContext" xml:space="preserve">
+    <value>An assigned context must contain between 1 and 256 characters and cannot be whitespace only.</value>
+  </data>
+</root>

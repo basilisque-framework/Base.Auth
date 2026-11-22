@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="CertificateHasNoPrivateKey" xml:space="preserve">
+    <value>Das Zertifikat enthält keinen privaten Schlüssel.</value>
+  </data>
+  <data name="ExpiredTokenReturned" xml:space="preserve">
+    <value>Der Autorisierungsserver hat ein abgelaufenes Token zurückgegeben.</value>
+  </data>
+  <data name="FixedMachineClientNameExists" xml:space="preserve">
+    <value>Ein fest konfigurierter Machine Client verwendet diesen Registrierungsnamen bereits.</value>
+  </data>
+  <data name="InvalidMachineClientOptions" xml:space="preserve">
+    <value>Eine HTTPS-Autorität, eine Client-ID, gültige Scopes und ein Vorlauf für die Token-Erneuerung sind erforderlich.</value>
+  </data>
+  <data name="KeyIdentifierRequired" xml:space="preserve">
+    <value>Eine Schlüsselkennung ist erforderlich.</value>
+  </data>
+  <data name="MachineClientNotConfigured" xml:space="preserve">
+    <value>Der Machine Client ist nicht konfiguriert.</value>
+  </data>
+  <data name="MachineClientRegistrationExists" xml:space="preserve">
+    <value>Die Registrierung des Machine Clients ist bereits vorhanden.</value>
+  </data>
+  <data name="MultipleMatchingSigningCertificates" xml:space="preserve">
+    <value>Es wurden mehrere passende Signaturzertifikate gefunden.</value>
+  </data>
+  <data name="NoValidSigningCertificate" xml:space="preserve">
+    <value>Es wurde kein derzeit gültiges Signaturzertifikat gefunden.</value>
+  </data>
+  <data name="RegistrationNameRequired" xml:space="preserve">
+    <value>Ein Registrierungsname ist erforderlich.</value>
+  </data>
+  <data name="RsaCertificateTooShort" xml:space="preserve">
+    <value>Ein RSA-Zertifikat mit mindestens 2048 Bit ist erforderlich.</value>
+  </data>
+  <data name="RsaKeyTooShort" xml:space="preserve">
+    <value>RSA-Schlüssel müssen mindestens 2048 Bit lang sein.</value>
+  </data>
+  <data name="SigningCredentialMissing" xml:space="preserve">
+    <value>Die Factory hat keine Anmeldeinformationen zum Signieren bereitgestellt.</value>
+  </data>
+  <data name="ThumbprintRequired" xml:space="preserve">
+    <value>Ein Zertifikatfingerabdruck ist erforderlich.</value>
+  </data>
+  <data name="TokenRequestFailed" xml:space="preserve">
+    <value>Die Tokenanforderung ist fehlgeschlagen.</value>
+  </data>
+  <data name="UnsupportedCertificateKey" xml:space="preserve">
+    <value>Das Zertifikat muss einen privaten RSA- oder ECDSA-Schlüssel enthalten.</value>
+  </data>
+  <data name="UnsupportedNamedCurve" xml:space="preserve">
+    <value>Es werden nur die benannten Kurven P-256, P-384 und P-521 unterstützt.</value>
+  </data>
+  <data name="UnsupportedSigningPublicKey" xml:space="preserve">
+    <value>Der Signaturschlüssel muss einen öffentlichen RSA- oder ECDSA-Schlüssel bereitstellen.</value>
+  </data>
+  <data name="ValidRegistrationNameRequired" xml:space="preserve">
+    <value>Ein gültiger Registrierungsname ist erforderlich.</value>
+  </data>
+</root>

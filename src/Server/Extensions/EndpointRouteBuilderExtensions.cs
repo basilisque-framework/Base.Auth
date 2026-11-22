@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -31,18 +32,19 @@ public static class EndpointRouteBuilderExtensions
 
             return endpoints.MapPost(settings.TokenEndpointPath, async (HttpContext context, IServiceActorFactory actors, IOpenIddictApplicationManager applications) =>
             {
-                var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("The OpenIddict server middleware did not process this request.");
+                var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException(Messages.RequestNotProcessedByServerMiddleware);
                 if (request.IsAuthorizationCodeGrantType())
                 {
                     return await LocalUserEndpointRouteBuilderExtensions.ExchangeCodeAsync(context,
                         context.RequestServices.GetRequiredService<SignInManager<LocalUser>>(),
-                        context.RequestServices.GetRequiredService<ILocalUserAdmission>());
+                        context.RequestServices.GetRequiredService<ILocalUserAdmission>(),
+                        context.RequestServices.GetRequiredService<IStringLocalizer<AuthProtocolMessages>>());
                 }
 
                 if (!request.IsClientCredentialsGrantType())
                     return Results.BadRequest();
 
-                var application = await applications.FindByClientIdAsync(request.ClientId!, context.RequestAborted) ?? throw new InvalidOperationException("The authenticated client no longer exists.");
+                var application = await applications.FindByClientIdAsync(request.ClientId!, context.RequestAborted) ?? throw new InvalidOperationException(Messages.AuthenticatedClientNotFound);
 
                 if (request.GetScopes().Any(scope => scope != settings.ApiScope) ||
                     !await applications.HasPermissionAsync(application, Permissions.Prefixes.Scope + settings.ApiScope, context.RequestAborted))

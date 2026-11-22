@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AudienceRequired" xml:space="preserve">
+    <value>Auth:Audience ist erforderlich.</value>
+  </data>
+  <data name="CertificatePathRequired" xml:space="preserve">
+    <value>Auth:{0}CertificatePath ist außerhalb der Entwicklungsumgebung erforderlich.</value>
+  </data>
+  <data name="ClientAdministrationCompleted" xml:space="preserve">
+    <value>Die Clientverwaltung wurde abgeschlossen. Es wurde kein privater Schlüssel importiert.</value>
+  </data>
+  <data name="CommandOptionRequired" xml:space="preserve">
+    <value>--{0} ist erforderlich.</value>
+  </data>
+  <data name="ExpiredReplayMarkersRemoved" xml:space="preserve">
+    <value>Entfernte abgelaufene Wiederholungsmarker für Client-Assertions: {0}</value>
+  </data>
+  <data name="InvalidRedirectUri" xml:space="preserve">
+    <value>Geben Sie eine HTTPS- oder eine HTTP-Loopback-Umleitungsadresse an.</value>
+  </data>
+  <data name="IssuerRequired" xml:space="preserve">
+    <value>Auth:Issuer ist erforderlich.</value>
+  </data>
+  <data name="LocalAdministrationCompleted" xml:space="preserve">
+    <value>Die Verwaltung der lokalen Authentifizierung wurde abgeschlossen.</value>
+  </data>
+  <data name="LocalUserPasswordRequired" xml:space="preserve">
+    <value>Legen Sie BASE_AUTH_LOCAL_USER_PASSWORD für diesen Verwaltungsprozess fest.</value>
+  </data>
+  <data name="MigrateBeforeNativeAot" xml:space="preserve">
+    <value>Wenden Sie die Datenbankmigrationen separat an, bevor Sie diesen Host mit Native AOT starten.</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Mein Konto</value>
+  </data>
+  <data name="OneAdministrationOperation" xml:space="preserve">
+    <value>Wählen Sie jeweils nur einen Verwaltungsvorgang aus.</value>
+  </data>
+  <data name="OneClientAdministrationOperation" xml:space="preserve">
+    <value>Wählen Sie jeweils nur einen Vorgang zur Clientverwaltung aus.</value>
+  </data>
+  <data name="PublicJwksRequired" xml:space="preserve">
+    <value>--public-jwks ist erforderlich.</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Der Benutzer existiert nicht.</value>
+  </data>
+</root>

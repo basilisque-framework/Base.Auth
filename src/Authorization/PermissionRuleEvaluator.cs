@@ -39,7 +39,7 @@ internal sealed class PermissionRuleEvaluator
         _rules = indexRules(rolesById.Values);
         _assignments = assignments.ToLookup(assignment => (assignment.ActorKind, assignment.SubjectId));
         if (_assignments.SelectMany(group => group).Any(assignment => !rolesById.ContainsKey(assignment.RoleId)))
-            throw new ArgumentException("Every assignment must reference a known role.", nameof(assignments));
+            throw new ArgumentException(Messages.AssignmentRequiresKnownRole, nameof(assignments));
     }
 
     internal IReadOnlyDictionary<string, bool> Evaluate(Actor actor,
@@ -124,10 +124,10 @@ internal sealed class PermissionRuleEvaluator
             foreach (var rule in role.Rules)
             {
                 if (!_objects.TryGetValue(rule.ObjectId, out var permissionObject) || !supportsAction(permissionObject, rule.ActionId))
-                    throw new ArgumentException("Every rule must reference a known object and a supported action.", nameof(roles));
+                    throw new ArgumentException(Messages.RuleRequiresSupportedAction, nameof(roles));
 
                 if (!rules.TryAdd((role.Id, rule.ObjectId, rule.ActionId), rule.Effect))
-                    throw new ArgumentException("A role may define at most one rule per object and action.", nameof(roles));
+                    throw new ArgumentException(Messages.DuplicateRoleRule, nameof(roles));
             }
         }
 
@@ -145,11 +145,11 @@ internal sealed class PermissionRuleEvaluator
             for (string? objectId = permissionObject.Id; objectId is not null && !validated.Contains(objectId);)
             {
                 if (!path.Add(objectId))
-                    throw new ArgumentException("The permission object hierarchy must be acyclic.");
+                    throw new ArgumentException(Messages.PermissionHierarchyCycle);
                 if (!_objects.TryGetValue(objectId, out var current))
-                    throw new ArgumentException("Every parent must reference a known permission object.");
+                    throw new ArgumentException(Messages.ParentRequiresKnownObject);
                 if (!_objectTypes.ContainsKey(current.TypeId))
-                    throw new ArgumentException("Every permission object must reference a known type.");
+                    throw new ArgumentException(Messages.ObjectRequiresKnownType);
 
                 objectId = current.ParentId;
             }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AudienceRequired" xml:space="preserve">
+    <value>Auth:Audience is required.</value>
+  </data>
+  <data name="CertificatePathRequired" xml:space="preserve">
+    <value>Auth:{0}CertificatePath is required outside Development.</value>
+  </data>
+  <data name="ClientAdministrationCompleted" xml:space="preserve">
+    <value>Client administration completed. No private key was imported.</value>
+  </data>
+  <data name="CommandOptionRequired" xml:space="preserve">
+    <value>--{0} is required.</value>
+  </data>
+  <data name="ExpiredReplayMarkersRemoved" xml:space="preserve">
+    <value>Expired assertion markers removed: {0}</value>
+  </data>
+  <data name="InvalidRedirectUri" xml:space="preserve">
+    <value>Provide an HTTPS or HTTP loopback redirect URI.</value>
+  </data>
+  <data name="IssuerRequired" xml:space="preserve">
+    <value>Auth:Issuer is required.</value>
+  </data>
+  <data name="LocalAdministrationCompleted" xml:space="preserve">
+    <value>Local authentication administration completed.</value>
+  </data>
+  <data name="LocalUserPasswordRequired" xml:space="preserve">
+    <value>Set BASE_AUTH_LOCAL_USER_PASSWORD for this administration process.</value>
+  </data>
+  <data name="MigrateBeforeNativeAot" xml:space="preserve">
+    <value>Apply database migrations separately before running this host with Native AOT.</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>My account</value>
+  </data>
+  <data name="OneAdministrationOperation" xml:space="preserve">
+    <value>Choose one administration operation at a time.</value>
+  </data>
+  <data name="OneClientAdministrationOperation" xml:space="preserve">
+    <value>Choose one client administration operation at a time.</value>
+  </data>
+  <data name="PublicJwksRequired" xml:space="preserve">
+    <value>--public-jwks is required.</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>The user does not exist.</value>
+  </data>
+</root>
