@@ -27,7 +27,9 @@ public sealed class AuthDbContextDesignTimeFactory : BaseDesignTimeDbContextFact
         new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Database:Provider"] = "SQLite",
-            ["Database:ConnectionStrings:SQLite:ConnectionString"] = "Data Source=auth-design.db"
+            ["Database:ConnectionStrings:SQLite:ConnectionString"] = "Data Source=auth-design.db",
+            ["Database:ConnectionStrings:PostgreSQL:ConnectionString"] = "Host=localhost;Database=auth_design;Username=design",
+            ["Database:ConnectionStrings:SqlServer:ConnectionString"] = "Server=localhost;Database=auth_design;Integrated Security=True"
         }).AddEnvironmentVariables().AddCommandLine(args).Build();
 
     /// <inheritdoc />

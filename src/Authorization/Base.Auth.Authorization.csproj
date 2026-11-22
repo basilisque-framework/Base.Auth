@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Basilisque.Base.Auth.Authorization</PackageId>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Authorization.Abstractions/Base.Auth.Authorization.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Basilisque.DataAccess.EntityFramework.Relational" />
+    <InternalsVisibleTo Include="Basilisque.Base.Auth.DataAccess.EntityFramework.Relational" />
+  </ItemGroup>
+</Project>

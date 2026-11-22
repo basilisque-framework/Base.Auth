@@ -3,93 +3,100 @@ using System;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.Migrations.Identity;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Identity;
 
 [DbContext(typeof(LocalIdentityDbContext))]
-[Migration("20261116235125_InitialLocalIdentity")]
-partial class InitialLocalIdentity
+[Migration("20261116235130_Identity_InitialLocalIdentity")]
+partial class Identity_InitialLocalIdentity
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
-        modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
+        modelBuilder
+            .HasAnnotation("ProductVersion", "10.0.13")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
         modelBuilder.Entity("Basilisque.Base.Auth.Server.Identity.LocalUser", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("uniqueidentifier");
 
                 b.Property<int>("AccessFailedCount")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("int");
 
                 b.Property<string>("ConcurrencyStamp")
                     .IsConcurrencyToken()
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("ContextId")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.Property<string>("Email")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.Property<bool>("EmailConfirmed")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bit");
 
                 b.Property<bool>("Enabled")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bit");
 
                 b.Property<bool>("LockoutEnabled")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bit");
 
                 b.Property<DateTimeOffset?>("LockoutEnd")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("datetimeoffset");
 
                 b.Property<string>("NormalizedEmail")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.Property<string>("NormalizedUserName")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.Property<string>("PasswordHash")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("PhoneNumber")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.Property<bool>("PhoneNumberConfirmed")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bit");
 
                 b.Property<string>("SecurityStamp")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<bool>("TwoFactorEnabled")
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("bit");
 
                 b.Property<string>("UserName")
                     .HasMaxLength(256)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(256)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("NormalizedEmail")
                     .IsUnique()
-                    .HasDatabaseName("EmailIndex");
+                    .HasDatabaseName("EmailIndex")
+                    .HasFilter("[NormalizedEmail] IS NOT NULL");
 
                 b.HasIndex("NormalizedUserName")
                     .IsUnique()
-                    .HasDatabaseName("UserNameIndex");
+                    .HasDatabaseName("UserNameIndex")
+                    .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                 b.ToTable("Auth_Users", (string)null);
             });
@@ -98,16 +105,18 @@ partial class InitialLocalIdentity
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("INTEGER");
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                 b.Property<string>("ClaimType")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("ClaimValue")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<Guid>("UserId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("uniqueidentifier");
 
                 b.HasKey("Id");
 
@@ -120,17 +129,17 @@ partial class InitialLocalIdentity
             {
                 b.Property<string>("LoginProvider")
                     .HasMaxLength(128)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(128)");
 
                 b.Property<string>("ProviderKey")
                     .HasMaxLength(128)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(128)");
 
                 b.Property<string>("ProviderDisplayName")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.Property<Guid>("UserId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("uniqueidentifier");
 
                 b.HasKey("LoginProvider", "ProviderKey");
 
@@ -143,10 +152,10 @@ partial class InitialLocalIdentity
             {
                 b.Property<byte[]>("CredentialId")
                     .HasMaxLength(1024)
-                    .HasColumnType("BLOB");
+                    .HasColumnType("varbinary(1024)");
 
                 b.Property<Guid>("UserId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("uniqueidentifier");
 
                 b.HasKey("CredentialId");
 
@@ -158,18 +167,18 @@ partial class InitialLocalIdentity
         modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
             {
                 b.Property<Guid>("UserId")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("uniqueidentifier");
 
                 b.Property<string>("LoginProvider")
                     .HasMaxLength(128)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(128)");
 
                 b.Property<string>("Name")
                     .HasMaxLength(128)
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(128)");
 
                 b.Property<string>("Value")
-                    .HasColumnType("TEXT");
+                    .HasColumnType("nvarchar(max)");
 
                 b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -225,7 +234,7 @@ partial class InitialLocalIdentity
                         b1.Property<byte[]>("PublicKey")
                             .IsRequired();
 
-                        b1.Property<uint>("SignCount");
+                        b1.Property<long>("SignCount");
 
                         b1.PrimitiveCollection<string>("Transports");
 
@@ -235,7 +244,7 @@ partial class InitialLocalIdentity
 
                         b1
                             .ToJson("Data")
-                            .HasColumnType("TEXT");
+                            .HasColumnType("nvarchar(max)");
 
                         b1.WithOwner()
                             .HasForeignKey("IdentityUserPasskeyCredentialId");

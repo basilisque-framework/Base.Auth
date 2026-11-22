@@ -5,34 +5,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations.Auth;
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
-[Migration("20261102142541_InitialOpenIddict")]
-partial class InitialOpenIddict
+[Migration("20261102142528_Auth_InitialOpenIddict")]
+partial class Auth_InitialOpenIddict
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
-        modelBuilder
-            .HasAnnotation("ProductVersion", "10.0.13")
-            .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+        modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
         modelBuilder.Entity("Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model.AssertionReplayEntry", b =>
             {
                 b.Property<string>("Id")
                     .HasMaxLength(64)
-                    .HasColumnType("character varying(64)");
+                    .HasColumnType("TEXT");
 
                 b.Property<long>("ExpiresAtUtcTicks")
-                    .HasColumnType("bigint");
+                    .HasColumnType("INTEGER");
 
                 b.HasKey("Id");
 
@@ -45,58 +40,58 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ApplicationType")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ClientId")
                     .HasMaxLength(100)
-                    .HasColumnType("character varying(100)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ClientSecret")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ClientType")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ConsentType")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("JsonWebKeySet")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Permissions")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("PostLogoutRedirectUris")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("RedirectUris")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Requirements")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Settings")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.HasKey("Id");
 
@@ -110,36 +105,36 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("timestamp with time zone");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Scopes")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("character varying(400)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Type")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.HasKey("Id");
 
@@ -152,34 +147,34 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Description")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Descriptions")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("DisplayName")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("DisplayNames")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Name")
                     .HasMaxLength(200)
-                    .HasColumnType("character varying(200)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Resources")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.HasKey("Id");
 
@@ -193,49 +188,49 @@ partial class InitialOpenIddict
             {
                 b.Property<string>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ApplicationId")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("AuthorizationId")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ConcurrencyToken")
                     .IsConcurrencyToken()
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<DateTime?>("CreationDate")
-                    .HasColumnType("timestamp with time zone");
+                    .HasColumnType("TEXT");
 
                 b.Property<DateTime?>("ExpirationDate")
-                    .HasColumnType("timestamp with time zone");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Payload")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Properties")
-                    .HasColumnType("text");
+                    .HasColumnType("TEXT");
 
                 b.Property<DateTime?>("RedemptionDate")
-                    .HasColumnType("timestamp with time zone");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("ReferenceId")
                     .HasMaxLength(100)
-                    .HasColumnType("character varying(100)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Status")
                     .HasMaxLength(50)
-                    .HasColumnType("character varying(50)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Subject")
                     .HasMaxLength(400)
-                    .HasColumnType("character varying(400)");
+                    .HasColumnType("TEXT");
 
                 b.Property<string>("Type")
                     .HasMaxLength(150)
-                    .HasColumnType("character varying(150)");
+                    .HasColumnType("TEXT");
 
                 b.HasKey("Id");
 

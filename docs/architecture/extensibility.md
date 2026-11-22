@@ -41,16 +41,27 @@ behavior explicitly.
 
 ## Permission catalogs and roles
 
-A permission catalog defines the known product actions and their scope. Role
-administration groups those permissions for a customer. Assignments connect roles to
-users or supported external groups. Authorization evaluates the effective permissions
-against the requested operation and resource.
+The optional `Basilisque.Base.Auth.Authorization.Abstractions` package defines
+`IPermissionEvaluator`. Applications can provide their own implementation. The
+`Basilisque.Base.Auth.Authorization` package provides the EF Core implementation
+and the `IPermissionManagement` API. See [business permissions](../authorization.md)
+for setup and administration.
 
-The design provides a default catalog and supports product-defined permission points.
-Applications can supply their own catalog or role store independently where their
-contracts are compatible. Use stable, unique permission IDs. Treat unknown or removed
-IDs as granting no access. If an application replaces the catalog, any exposed
-administrative action still requires an explicit permission mapping.
+A permission object type defines the supported action IDs. An object can have a parent
+in the permission catalog. Roles group rules that allow or deny actions on these
+objects. Assignments identify a user or service by actor kind and subject ID. Each
+assignment has one application-defined scope ID and optional validity bounds. The start
+is inclusive and the end is exclusive.
+
+For each check, the application resolves all applicable scope IDs from trusted resource
+data. For example, a room may have assignments that apply through its facility and
+company. The evaluator considers assignments in any of those scopes. Actor context
+does not imply a scope. An empty scope set matches no assignments.
+
+The evaluator checks the target and its ancestors for rules with the requested action
+ID. Any applicable denial overrides all grants. An unknown object, unsupported action,
+or absence of a matching grant results in denial. `AreAllowed` evaluates a batch at one
+instant and returns each decision under its caller-provided key.
 
 ## Native integration
 

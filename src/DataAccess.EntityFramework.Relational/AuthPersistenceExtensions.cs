@@ -1,4 +1,5 @@
-﻿using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
+﻿using Basilisque.Base.Auth.Authorization.EntityFramework;
+using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.Base.Auth.Server.ClientAuth;
 using Basilisque.DataAccess.EntityFramework.Base.Connection;
 using Basilisque.DataAccess.EntityFramework.Base.Data;
@@ -22,7 +23,9 @@ public static class AuthPersistenceExtensions
     /// <param name="identity">The builder for local Identity accounts.</param>
     extension(IdentityBuilder identity)
     {
-        /// <summary>Uses the default relational store for local Identity accounts.</summary>
+        /// <summary>
+        /// Uses the default relational store for local Identity accounts.
+        /// </summary>
         public IdentityBuilder AddBaseAuthRelationalUserStore()
         {
             var services = identity.Services;
@@ -47,6 +50,16 @@ public static class AuthPersistenceExtensions
     /// <param name="services">The service collection that receives the relational store registrations.</param>
     extension(IServiceCollection services)
     {
+        /// <summary>
+        /// Adds persistent permission management and migrations for the configured Basilisque provider.
+        ///  </summary>
+        public IServiceCollection AddBaseAuthRelationalAuthorization()
+        {
+            PermissionServiceCollectionExtensions.AddPermissionServices(services);
+            services.TryAddEnumerable(ServiceDescriptor.Scoped<IDbInitializer, MigrationInitializer<PermissionDbContext>>());
+            return services;
+        }
+
         /// <summary>
         /// Adds the Basilisque-backed relational stores. Register Basilisque provider services in the host.
         /// </summary>

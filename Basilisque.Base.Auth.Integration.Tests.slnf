@@ -1,6 +1,7 @@
 {
   "solution": {
     "projects": [
+      "src/Authorization.Integration.Tests/Base.Auth.Authorization.Integration.Tests.csproj",
       "src/Client.Credentials.DataProtection.Integration.Tests/Base.Auth.Client.Credentials.DataProtection.Integration.Tests.csproj",
       "src/Client.Integration.Tests/Base.Auth.Client.Integration.Tests.csproj",
       "src/DataAccess.EntityFramework.Relational.Integration.Tests/Base.Auth.DataAccess.EntityFramework.Relational.Integration.Tests.csproj",

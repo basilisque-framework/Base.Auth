@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Auth;
 
 /// <inheritdoc />
-public partial class InitialOpenIddict : Migration
+public partial class Auth_InitialOpenIddict : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)

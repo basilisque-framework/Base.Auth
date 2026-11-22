@@ -4,6 +4,12 @@
     <Project Path="src/Abstractions.Unit.Tests/Base.Auth.Abstractions.Unit.Tests.csproj" />
     <Project Path="src/Abstractions/Base.Auth.Abstractions.csproj" />
   </Folder>
+  <Folder Name="/src/Authorization/">
+    <Project Path="src/Authorization.Abstractions/Base.Auth.Authorization.Abstractions.csproj" />
+    <Project Path="src/Authorization.Integration.Tests/Base.Auth.Authorization.Integration.Tests.csproj" />
+    <Project Path="src/Authorization.Unit.Tests/Base.Auth.Authorization.Unit.Tests.csproj" />
+    <Project Path="src/Authorization/Base.Auth.Authorization.csproj" />
+  </Folder>
   <Folder Name="/src/Client/">
     <Project Path="src/Client.Credentials.DataProtection.Integration.Tests/Base.Auth.Client.Credentials.DataProtection.Integration.Tests.csproj" />
     <Project Path="src/Client.Credentials.DataProtection/Base.Auth.Client.Credentials.DataProtection.csproj" />

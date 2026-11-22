@@ -1,5 +1,6 @@
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.Base.Auth.Server.ClientAuth;
+using Basilisque.Base.Auth.Authorization.EntityFramework;
 using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +52,7 @@ public sealed class ProviderModelTests
         // Act
         var script = database.GetService<IMigrator>().GenerateScript();
         // Assert
-        await Assert.That(script.Contains("InitialOpenIddict", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(script.Contains("_Auth_InitialOpenIddict", StringComparison.Ordinal)).IsTrue();
         await Assert.That(script.Contains("Auth_Applications", StringComparison.Ordinal)).IsTrue();
         await Assert.That(script.Contains("__BASAuthMigrationsHistory", StringComparison.Ordinal)).IsTrue();
     }
@@ -107,7 +108,7 @@ public sealed class ProviderModelTests
         await Assert.That(pendingChanges).IsFalse();
         await Assert.That(database.GetService<IMigrationsAssembly>().Assembly.GetName().Name)
             .IsEqualTo("Basilisque.Base.Auth.DataAccess.EntityFramework." + providerName);
-        await Assert.That(database.Database.GetMigrations().Single().EndsWith("_InitialLocalIdentity", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(database.Database.GetMigrations().Single().EndsWith("_Identity_InitialLocalIdentity", StringComparison.Ordinal)).IsTrue();
     }
 
     /// <summary>Checks that a machine-only host exposes only its protocol migration initializer.</summary>
@@ -124,21 +125,24 @@ public sealed class ProviderModelTests
         await Assert.That(initializers[0].DbContext is AuthDbContext).IsTrue();
     }
 
-    /// <summary>Checks that the protocol and Identity initializers record their migrations in the same history.</summary>
+    /// <summary>Checks that enabled Auth contexts record their migrations in the same history.</summary>
     [Test]
-    public async Task MigrateDatabase_ShouldShareMigrationHistory_WhenLocalStoreIsEnabled()
+    [Arguments(false)]
+    [Arguments(true)]
+    public async Task MigrateDatabase_ShouldShareMigrationHistory_WhenOptionalStoresAreEnabled(bool permissions)
     {
         // Arrange
         var path = Path.Combine(Path.GetTempPath(), "base-auth-migrations-" + Guid.NewGuid().ToString("N") + ".db");
         try
         {
             using var provider = createProvider("SQLite", registerAllProviders: true, localUsers: true,
-                sqliteConnectionString: $"Data Source={path};Pooling=False");
+                sqliteConnectionString: $"Data Source={path};Pooling=False", permissions: permissions);
             using var scope = provider.CreateScope();
             var auth = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var identity = scope.ServiceProvider.GetRequiredService<LocalIdentityDbContext>();
             var initializers = scope.ServiceProvider.GetServices<IDbInitializer>().ToArray();
-            var expectedMigrationIds = auth.Database.GetMigrations().Concat(identity.Database.GetMigrations()).Order(StringComparer.Ordinal).ToArray();
+            var expectedMigrationIds = initializers.SelectMany(initializer => initializer.DbContext.Database.GetMigrations())
+                .Order(StringComparer.Ordinal).ToArray();
             await auth.Database.MigrateAsync();
             auth.AssertionReplays.Add(new AssertionReplayEntry { Id = "existing", ExpiresAtUtcTicks = DateTimeOffset.UtcNow.AddHours(1).UtcTicks });
             await auth.SaveChangesAsync();
@@ -146,9 +150,9 @@ public sealed class ProviderModelTests
             foreach (var initializer in initializers)
                 initializer.MigrateDatabase();
             // Assert
-            await Assert.That(initializers.Length).IsEqualTo(2);
-            await Assert.That(auth.Database.GetAppliedMigrations().SequenceEqual(expectedMigrationIds)).IsTrue();
-            await Assert.That(identity.Database.GetAppliedMigrations().SequenceEqual(expectedMigrationIds)).IsTrue();
+            await Assert.That(initializers.Length).IsEqualTo(permissions ? 3 : 2);
+            foreach (var initializer in initializers)
+                await Assert.That(initializer.DbContext.Database.GetAppliedMigrations().SequenceEqual(expectedMigrationIds)).IsTrue();
             await Assert.That((await auth.AssertionReplays.AsNoTracking().SingleAsync()).Id).IsEqualTo("existing");
             await Assert.That(await identity.Users.CountAsync()).IsEqualTo(0);
         }
@@ -262,8 +266,28 @@ public sealed class ProviderModelTests
         await database.SaveChangesAsync();
     }
 
+    /// <summary>Checks the permission migration mapping and snapshot for each configured provider.</summary>
+    [Test]
+    [Arguments("SQLite")]
+    [Arguments("PostgreSQL")]
+    [Arguments("SqlServer")]
+    public async Task GetMigrations_ShouldUsePermissionSnapshot_WhenAuthorizationIsEnabled(string providerName)
+    {
+        // Arrange
+        using var provider = createProvider(providerName, registerAllProviders: true, permissions: true);
+        using var scope = provider.CreateScope();
+        var database = scope.ServiceProvider.GetRequiredService<PermissionDbContext>();
+
+        // Act
+        var migration = database.Database.GetMigrations().Single();
+
+        // Assert
+        await Assert.That(migration.EndsWith("_Permissions_Initial", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(database.Database.HasPendingModelChanges()).IsFalse();
+    }
+
     private static ServiceProvider createProvider(string providerName, bool registerAllProviders = false,
-        bool localUsers = false, string sqliteConnectionString = "Data Source=:memory:")
+        bool localUsers = false, string sqliteConnectionString = "Data Source=:memory:", bool permissions = false)
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -288,6 +312,8 @@ public sealed class ProviderModelTests
             default: throw new ArgumentException("Unsupported provider.");
         }
         services.AddBaseAuthRelationalPersistence();
+        if (permissions)
+            services.AddBaseAuthRelationalAuthorization();
         if (localUsers)
             services.AddBaseAuthLocalUsers().AddBaseAuthRelationalUserStore();
         return services.BuildServiceProvider();

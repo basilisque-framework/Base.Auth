@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.Migrations.Identity;
 
 [DbContext(typeof(LocalIdentityDbContext))]
-[Migration("20261116235127_InitialLocalIdentity")]
-partial class InitialLocalIdentity
+[Migration("20261116235127_Identity_InitialLocalIdentity")]
+partial class Identity_InitialLocalIdentity
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)

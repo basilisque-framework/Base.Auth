@@ -164,13 +164,3 @@ internal sealed class RuntimeMachineClientRegistry : IRuntimeMachineClientRegist
         }
     }
 }
-
-internal sealed class FixedMachineClientName
-{
-    internal FixedMachineClientName(string value)
-    {
-        Value = value;
-    }
-
-    internal string Value { get; }
-}

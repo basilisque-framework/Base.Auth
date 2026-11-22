@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Basilisque.Base.Auth.Authorization.Abstractions</PackageId>
+    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Abstractions/Base.Auth.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

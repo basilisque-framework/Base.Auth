@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Auth;
 
 [DbContext(typeof(AuthDbContext))]
-[Migration("20261102142552_InitialOpenIddict")]
-partial class InitialOpenIddict
+[Migration("20261102142552_Auth_InitialOpenIddict")]
+partial class Auth_InitialOpenIddict
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)

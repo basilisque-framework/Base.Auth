@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.Migrations.Identity;
 
 /// <inheritdoc />
-public partial class InitialLocalIdentity : Migration
+public partial class Identity_InitialLocalIdentity : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
