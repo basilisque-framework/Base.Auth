@@ -15,7 +15,7 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+    <TargetFrameworks>$(BAS_Auth_TargetFrameworks)</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>

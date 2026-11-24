@@ -37,6 +37,9 @@ jobs:
       projectOrSolution: 'Basilisque.Base.Auth.slnx'
       versioningProjectName: Base.Auth.Client
       artifactsPath: artifacts
+      dotNetVersion: |
+        10.0.x
+        11.0.x
       runDotnetPublish: false
       runDotnetPack: true
     secrets: inherit

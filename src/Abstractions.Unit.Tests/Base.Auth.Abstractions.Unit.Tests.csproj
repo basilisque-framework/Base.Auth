@@ -15,7 +15,7 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+    <TargetFrameworks>$(BAS_Auth_TargetFrameworks)</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Abstractions/Base.Auth.Abstractions.csproj" />

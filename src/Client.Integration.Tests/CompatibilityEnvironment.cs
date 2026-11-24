@@ -71,7 +71,7 @@ internal sealed class CompatibilityEnvironment : IAsyncDisposable
 
     internal string ProgramPath(string name, string framework)
     {
-        var pivot = name == "MachineService" ? Configuration : Configuration + "_" + framework;
+        var pivot = Configuration + "_" + framework;
         var extension = framework == "net48" ? ".exe" : ".dll";
         var path = Path.Combine(Root, "artifacts", "bin", "Base.Auth." + name, pivot, "Basilisque.Base.Auth." + name + extension);
         if (!File.Exists(path))

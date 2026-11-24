@@ -23,57 +23,69 @@
     <!--<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>-->
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DotNetPackageVersion>10.0.15</DotNetPackageVersion>
+    <NpgsqlEntityFrameworkCoreVersion>10.0.4</NpgsqlEntityFrameworkCoreVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <DotNetPackageVersion>11.0.0</DotNetPackageVersion>
+    <NpgsqlEntityFrameworkCoreVersion>11.0.0</NpgsqlEntityFrameworkCoreVersion>
+  </PropertyGroup>
+
   <!-- define NuGet package versions -->
   <ItemGroup>
     <!-- build -->
-    <PackageVersion Include="Basilisque.CommonFrameworkBuild" Version="2.0.0-Preview00012" />
-    <PackageVersion Include="GitVersion.MsBuild" Version="6.8.2" />
+    <PackageVersion Include="Basilisque.CommonFrameworkBuild" Version="2.0.0-RC00015" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="7.0.1" />
 
     <!-- server -->
-    <PackageVersion Include="Basilisque.DependencyInjection" Version="1.1.0-Preview00022" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.19.2" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.13" />
+    <PackageVersion Include="Basilisque.DependencyInjection" Version="1.1.0-RC00026" />
+    <PackageVersion Include="Basilisque.DependencyInjection.CodeAnalysis.ExtensionSupport" Version="1.1.0-RC00026" />
+    <PackageVersion Include="Basilisque.Core" Version="1.0.0-RC00004" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.23.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(DotNetPackageVersion)" />
     <!--<PackageVersion Include="Basilisque.Base.Service" Version="1.1.0-CI00002" />-->
 
     <!-- client -->
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.19.2" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.2" />
-    <PackageVersion Include="OpenIddict.Client.SystemNetHttp" Version="7.7.2" />
-    <PackageVersion Include="OpenIddict.Server.AspNetCore" Version="7.7.2" />
-    <PackageVersion Include="OpenIddict.Validation.AspNetCore" Version="7.7.2" />
-    <PackageVersion Include="OpenIddict.Validation.ServerIntegration" Version="7.7.2" />
-    <PackageVersion Include="OpenIddict.Validation.SystemNetHttp" Version="7.7.2" />
-    <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="7.7.2" />
-    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.13" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
+    <PackageVersion Include="OpenIddict.Client.SystemNetHttp" Version="7.9.0" />
+    <PackageVersion Include="OpenIddict.Server.AspNetCore" Version="7.9.0" />
+    <PackageVersion Include="OpenIddict.Validation.AspNetCore" Version="7.9.0" />
+    <PackageVersion Include="OpenIddict.Validation.ServerIntegration" Version="7.9.0" />
+    <PackageVersion Include="OpenIddict.Validation.SystemNetHttp" Version="7.9.0" />
+    <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="7.9.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCoreVersion)" />
+    <PackageVersion Include="System.Text.Json" Version="$(DotNetPackageVersion)" />
 
     <!-- EF Core -->
-    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.Relational" Version="1.0.0-Preview00044" />
-    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SqlServer" Version="1.0.0-Preview00044" />
-    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SQLite" Version="1.0.0-Preview00044" />
-    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.PostgreSQL" Version="1.0.0-Preview00044" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.13" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.Relational" Version="1.0.0-Preview00047" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SqlServer" Version="1.0.0-Preview00047" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.SQLite" Version="1.0.0-Preview00047" />
+    <PackageVersion Include="Basilisque.DataAccess.EntityFramework.PostgreSQL" Version="1.0.0-Preview00047" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetPackageVersion)" />
 
     <!-- testing -->
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
-    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.5.1" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.5.3" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
-    <PackageVersion Include="TUnit" Version="1.76.0" />
+    <PackageVersion Include="TUnit" Version="1.87.12" />
   </ItemGroup>
 
   <!-- import packages for all projects -->

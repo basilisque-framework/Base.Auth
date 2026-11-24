@@ -15,7 +15,7 @@
 -->
 # Testing
 
-Tests use TUnit and Microsoft.Testing.Platform on the .NET target framework set in
+Tests use TUnit and Microsoft.Testing.Platform on both .NET target frameworks set in
 [`Directory.Build.props`](../Directory.Build.props). The Windows compatibility suite
 also starts processes under .NET Framework 4.8.
 

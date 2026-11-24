@@ -26,7 +26,7 @@ and are not required as additional services when the libraries are embedded in a
 Run commands from the repository root. See [the M2M guide](../docs/m2m.md) for setup and credentials.
 
 ```powershell
-dotnet run --project samples/MachineService -- --initialize-database true
+dotnet run --project samples/MachineService -f net10.0 -- --initialize-database true
 ```
 
 The examples reference the libraries under `src/` directly. Products can consume the corresponding

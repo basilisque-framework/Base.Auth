@@ -16,7 +16,7 @@
 <Project>
   <!-- general build properties -->
   <PropertyGroup>
-    <BAS_Auth_TargetFramework>net10.0</BAS_Auth_TargetFramework>
+    <BAS_Auth_TargetFrameworks>net10.0;net11.0</BAS_Auth_TargetFrameworks>
     <LangVersion Condition="'$(TargetFramework)' == 'net48'">latest</LangVersion>
 
     <!-- Run code-style analyzers; EditorConfig selects which rules are warnings. -->

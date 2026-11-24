@@ -15,7 +15,7 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+    <TargetFrameworks>$(BAS_Auth_TargetFrameworks)</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../samples/MachineClient/Base.Auth.MachineClient.csproj" ReferenceOutputAssembly="false" />

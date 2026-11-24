@@ -221,21 +221,20 @@ OpenIddict signing and encryption.
 2. Initialize the database and register the client in one administrative invocation.
 
    ```powershell
-   dotnet run --project samples/MachineService -- --initialize-database true --register-client demo-client --public-jwks C:/setup/keys.public.json
+   dotnet run --project samples/MachineService -f net10.0 -- --initialize-database true --register-client demo-client --public-jwks C:/setup/keys.public.json
    ```
 
 3. Start the service.
 
    ```powershell
-   dotnet run --project samples/MachineService
+   dotnet run --project samples/MachineService -f net10.0
    ```
 
 4. Set `BASE_AUTH_CLIENT_CERTIFICATE_PASSWORD` in the client process environment and run
    the client. Use `-f net48` to run the .NET Framework variant on Windows.
 
    ```powershell
-   $targetFramework = dotnet msbuild samples/MachineClient/Base.Auth.MachineClient.csproj -getProperty:BAS_Auth_TargetFramework
-   dotnet run --project samples/MachineClient -f $targetFramework -- https://localhost:7443/ demo-client C:/setup/client.pfx https://localhost:7443/api/ping api
+   dotnet run --project samples/MachineClient -f net10.0 -- https://localhost:7443/ demo-client C:/setup/client.pfx https://localhost:7443/api/ping api
    ```
 
 Use `--context customer-installation` during registration to assign an application context.
@@ -249,9 +248,9 @@ The reference host runs each administrative command and exits. Registration reje
 existing client ID.
 
 ```powershell
-dotnet run --project samples/MachineService -- --replace-client-keys demo-client --public-jwks C:/setup/keys.public.json
-dotnet run --project samples/MachineService -- --disable-client demo-client
-dotnet run --project samples/MachineService -- --prune-assertions true
+dotnet run --project samples/MachineService -f net10.0 -- --replace-client-keys demo-client --public-jwks C:/setup/keys.public.json
+dotnet run --project samples/MachineService -f net10.0 -- --disable-client demo-client
+dotnet run --project samples/MachineService -f net10.0 -- --prune-assertions true
 ```
 
 Key replacement takes the full desired JWKS. For a rolling change, register both keys,
@@ -267,12 +266,10 @@ where required.
 
 ### Deploy the reference host
 
-Build the example container from the repository root. Pass the version of the configured
-.NET target as the tag for both the SDK and ASP.NET Core base images.
+Build the example container from the repository root. Pass 10.0 or 11.0 as the tag for both the SDK and ASP.NET Core base images.
 
 ```powershell
-$targetFramework = dotnet msbuild samples/MachineService/Base.Auth.MachineService.csproj -getProperty:BAS_Auth_TargetFramework
-$dotnetVersion = $targetFramework -replace '^net', ''
+$dotnetVersion = '10.0'
 docker build --build-arg "DOTNET_VERSION=$dotnetVersion" -f samples/MachineService/Dockerfile .
 ```
 

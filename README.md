@@ -47,7 +47,7 @@ The [reference applications](samples/README.md) include an ASP.NET Core service
 (`samples/MachineClient`).
 
 ```powershell
-dotnet run --project samples/MachineService -- --initialize-database true
+dotnet run --project samples/MachineService -f net10.0 -- --initialize-database true
 ```
 
 The development service requires a trusted HTTPS development certificate.
@@ -63,8 +63,8 @@ verification tools.
 - `docs/`: architecture and integration documentation.
 
 Shared build settings, package versions, and the .NET tool manifest live at the repository root.
-Build output is written to `artifacts/`. Use an SDK that supports the target framework
-set by `BAS_Auth_TargetFramework` in [Directory.Build.props](Directory.Build.props).
+Build output is written to `artifacts/`. Use the .NET 11 SDK to build both .NET 10 and .NET 11 targets.
+Install both runtimes to run the full test suite.
 
 ```powershell
 dotnet build Basilisque.Base.Auth.slnx

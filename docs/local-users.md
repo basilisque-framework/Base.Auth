@@ -78,9 +78,9 @@ HTTPS certificate by default. Set `BASE_AUTH_LOCAL_USER_PASSWORD` in the provisi
 process environment and remove it when the command completes.
 
 ```powershell
-dotnet run --project samples/MachineService -- --initialize-database true --create-user reader@example.test
-dotnet run --project samples/MachineService -- --register-user-client desktop-demo --redirect-uri http://127.0.0.1:8765/callback
-dotnet run --project samples/MachineService
+dotnet run --project samples/MachineService -f net10.0 -- --initialize-database true --create-user reader@example.test
+dotnet run --project samples/MachineService -f net10.0 -- --register-user-client desktop-demo --redirect-uri http://127.0.0.1:8765/callback
+dotnet run --project samples/MachineService -f net10.0
 ```
 
 Pass `--context demo-installation` to `--create-user` to assign an application context.
@@ -99,9 +99,9 @@ or self-service password recovery. The reference host uses administrative passwo
 reset and does not deliver email.
 
 ```powershell
-dotnet run --project samples/MachineService -- --reset-user-password reader@example.test
-dotnet run --project samples/MachineService -- --disable-user reader@example.test
-dotnet run --project samples/MachineService -- --enable-user reader@example.test
+dotnet run --project samples/MachineService -f net10.0 -- --reset-user-password reader@example.test
+dotnet run --project samples/MachineService -f net10.0 -- --disable-user reader@example.test
+dotnet run --project samples/MachineService -f net10.0 -- --enable-user reader@example.test
 ```
 
 The password reset command also reads `BASE_AUTH_LOCAL_USER_PASSWORD`. Disabling an

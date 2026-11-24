@@ -43,7 +43,7 @@ to check the SQLite snapshot:
 
 ```powershell
 $env:Database__Provider = 'SQLite'
-dotnet ef migrations has-pending-model-changes --project ../../src/DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj --startup-project Base.Auth.MachineService.csproj --context PermissionDbContext
+dotnet ef migrations has-pending-model-changes --project ../../src/DataAccess.EntityFramework.SQLite/Base.Auth.DataAccess.EntityFramework.SQLite.csproj --startup-project Base.Auth.MachineService.csproj --framework net11.0 --context PermissionDbContext
 ```
 
 Use the matching provider project for PostgreSQL or SQL Server. The provider

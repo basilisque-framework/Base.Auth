@@ -16,7 +16,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Basilisque.Base.Auth.Server</PackageId>
-    <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>
+    <TargetFrameworks>$(BAS_Auth_TargetFrameworks)</TargetFrameworks>
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
   </PropertyGroup>
 

@@ -14,16 +14,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Pass the version from BAS_Auth_TargetFramework in Directory.Build.props.
+# Set DOTNET_VERSION to 10.0 or 11.0.
 ARG DOTNET_VERSION
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
+ARG DOTNET_VERSION
 WORKDIR /source
 COPY global.json ./
 COPY Directory.Build.props Directory.Build.targets Directory.Packages.props ./
 COPY README.md ./
 COPY src/ ./src/
 COPY samples/MachineService/ ./samples/MachineService/
-RUN dotnet publish samples/MachineService/Base.Auth.MachineService.csproj -c Release -o /output -p:UseAppHost=false -p:DisableGitVersionTask=true
+RUN dotnet publish samples/MachineService/Base.Auth.MachineService.csproj -c Release -f net${DOTNET_VERSION} -o /output -p:BAS_Auth_TargetFrameworks=net${DOTNET_VERSION} -p:UseAppHost=false -p:DisableGitVersionTask=true
 
 FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}
 WORKDIR /app

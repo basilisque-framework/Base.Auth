@@ -16,8 +16,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Basilisque.Base.Auth.Abstractions</PackageId>
-    <TargetFrameworks>$(BAS_Auth_TargetFramework);net48</TargetFrameworks>
-    <IsAotCompatible Condition="'$(TargetFramework)' == '$(BAS_Auth_TargetFramework)'">true</IsAotCompatible>
+    <TargetFrameworks>$(BAS_Auth_TargetFrameworks);net48</TargetFrameworks>
+    <IsAotCompatible Condition="'$(TargetFramework)' != '' And '$(TargetFramework)' != 'net48'">true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
