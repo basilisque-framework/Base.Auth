@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Identifies an applicable direct or inherited role rule and the scopes activating it.</summary>
 public sealed class PermissionRuleMatch

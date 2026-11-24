@@ -1,5 +1,5 @@
+﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Basilisque.Base.Auth.Authorization.EntityFramework;
 

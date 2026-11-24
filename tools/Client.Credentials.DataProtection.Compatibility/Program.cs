@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Client.Credentials.DataProtection;
+﻿using Basilisque.Base.Auth.Client.Credentials.DataProtection;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
@@ -14,7 +14,8 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        if (args.Length != 4) throw new ArgumentException(Messages.CompatibilityUsage);
+        if (args.Length != 4)
+            throw new ArgumentException(Messages.CompatibilityUsage);
         var protection = DataProtectionProvider.Create(new DirectoryInfo(args[1]), options =>
             options.SetApplicationName("Base.Auth.Compatibility").ProtectKeysWithDpapi());
         var packages = new DataProtectionPrivateKeyPackages(protection);
@@ -31,7 +32,8 @@ internal static class Program
             Console.WriteLine(Messages.ProtectedPackageCreated);
             return 0;
         }
-        if (args[0] != "verify") throw new ArgumentException(Messages.UnknownCompatibilityOperation);
+        if (args[0] != "verify")
+            throw new ArgumentException(Messages.UnknownCompatibilityOperation);
 
         using var credential = packages.Load(File.ReadAllText(args[2]), "compatibility/client");
         var privateKey = (RsaSecurityKey)credential.Credentials.Key;
@@ -46,5 +48,4 @@ internal static class Program
         Console.WriteLine(Messages.CrossFrameworkVerificationPassed);
         return 0;
     }
-
 }

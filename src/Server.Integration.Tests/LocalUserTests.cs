@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Server.Identity;
+﻿using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -154,9 +154,13 @@ public sealed class LocalUserTests
         using var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("/connect/authorize",
             new Dictionary<string, string?>
             {
-                ["client_id"] = ClientId, ["redirect_uri"] = Redirect, ["response_type"] = "code", ["scope"] = "openid api",
+                ["client_id"] = ClientId,
+                ["redirect_uri"] = Redirect,
+                ["response_type"] = "code",
+                ["scope"] = "openid api",
                 ["code_challenge"] = WebEncoders.Base64UrlEncode(SHA256.HashData(Encoding.ASCII.GetBytes(Verifier))),
-                ["code_challenge_method"] = "S256", ["prompt"] = "none"
+                ["code_challenge_method"] = "S256",
+                ["prompt"] = "none"
             }));
         request.Headers.AcceptLanguage.ParseAdd(culture);
 
@@ -177,7 +181,9 @@ public sealed class LocalUserTests
         await ensureSuccessAsync(users.CreateAsync(user, Password));
         var descriptor = new OpenIddictApplicationDescriptor
         {
-            ClientId = ClientId, ClientType = ClientTypes.Public, ConsentType = ConsentTypes.Implicit
+            ClientId = ClientId,
+            ClientType = ClientTypes.Public,
+            ConsentType = ConsentTypes.Implicit
         };
         descriptor.RedirectUris.Add(new Uri(Redirect));
         descriptor.Permissions.UnionWith([Permissions.Endpoints.Authorization, Permissions.Endpoints.Token,
@@ -191,8 +197,14 @@ public sealed class LocalUserTests
         var challenge = WebEncoders.Base64UrlEncode(SHA256.HashData(Encoding.ASCII.GetBytes(Verifier)));
         using var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("/connect/authorize", new Dictionary<string, string?>
         {
-            ["client_id"] = ClientId, ["redirect_uri"] = Redirect, ["response_type"] = "code", ["scope"] = "openid api",
-            ["code_challenge"] = challenge, ["code_challenge_method"] = "S256", ["state"] = "test-state", ["nonce"] = "test-nonce"
+            ["client_id"] = ClientId,
+            ["redirect_uri"] = Redirect,
+            ["response_type"] = "code",
+            ["scope"] = "openid api",
+            ["code_challenge"] = challenge,
+            ["code_challenge_method"] = "S256",
+            ["state"] = "test-state",
+            ["nonce"] = "test-nonce"
         }));
         request.Headers.Add("Cookie", await signInAsync(environment));
         using var response = await environment.Http.SendAsync(request);
@@ -214,8 +226,11 @@ public sealed class LocalUserTests
     private static Task<HttpResponseMessage> exchangeAsync(ProtocolTestEnvironment environment, string code, string verifier)
         => environment.Http.PostAsync("/connect/token", new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["grant_type"] = "authorization_code", ["client_id"] = ClientId, ["redirect_uri"] = Redirect,
-            ["code"] = code, ["code_verifier"] = verifier
+            ["grant_type"] = "authorization_code",
+            ["client_id"] = ClientId,
+            ["redirect_uri"] = Redirect,
+            ["code"] = code,
+            ["code_verifier"] = verifier
         }));
 
     private static async Task ensureSuccessAsync(Task<IdentityResult> operation)

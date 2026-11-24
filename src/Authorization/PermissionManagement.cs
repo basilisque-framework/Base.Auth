@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Manages the catalog, roles, and scoped assignments from trusted application code.</summary>
 /// <remarks>The calling application authorizes administrative operations.</remarks>

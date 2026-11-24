@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
 
@@ -31,12 +31,20 @@ internal sealed class CompatibilityEnvironment : IAsyncDisposable
     {
         var start = new ProcessStartInfo(executable)
         {
-            WorkingDirectory = Root, UseShellExecute = false, CreateNoWindow = true,
-            RedirectStandardOutput = true, RedirectStandardError = true
+            WorkingDirectory = Root,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
         };
-        foreach (var argument in arguments) start.ArgumentList.Add(argument);
+        foreach (var argument in arguments)
+            start.ArgumentList.Add(argument);
         if (environment is not null)
-            foreach (var pair in environment) start.Environment[pair.Key] = pair.Value;
+        {
+            foreach (var pair in environment)
+                start.Environment[pair.Key] = pair.Value;
+        }
+
         var child = new ChildProcess(Process.Start(start) ?? throw new InvalidOperationException("Cannot start compatibility process."));
         _children.Add(child);
         return child;
@@ -50,7 +58,8 @@ internal sealed class CompatibilityEnvironment : IAsyncDisposable
         var pivot = name == "MachineService" ? Configuration : Configuration + "_" + framework;
         var extension = framework == "net48" ? ".exe" : ".dll";
         var path = Path.Combine(Root, "artifacts", "bin", "Base.Auth." + name, pivot, "Basilisque.Base.Auth." + name + extension);
-        if (!File.Exists(path)) throw new FileNotFoundException("Build the integration test project before running compatibility tests.", path);
+        if (!File.Exists(path))
+            throw new FileNotFoundException("Build the integration test project before running compatibility tests.", path);
         return path;
     }
 
@@ -63,9 +72,11 @@ internal sealed class CompatibilityEnvironment : IAsyncDisposable
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        foreach (var child in _children.AsEnumerable().Reverse()) await child.DisposeAsync();
+        foreach (var child in _children.AsEnumerable().Reverse())
+            await child.DisposeAsync();
         // Only the unique directory created and owned by this fixture is removed.
-        if (Directory.Exists(DirectoryPath)) Directory.Delete(DirectoryPath, recursive: true);
+        if (Directory.Exists(DirectoryPath))
+            Directory.Delete(DirectoryPath, recursive: true);
     }
 }
 
@@ -98,7 +109,8 @@ internal sealed record ProcessResult
 
     internal void EnsureSuccess()
     {
-        if (ExitCode != 0) throw new InvalidOperationException($"Compatibility setup failed ({ExitCode}). {Output} {Error}");
+        if (ExitCode != 0)
+            throw new InvalidOperationException($"Compatibility setup failed ({ExitCode}). {Output} {Error}");
     }
 }
 
@@ -120,10 +132,14 @@ internal sealed class ChildProcess : IAsyncDisposable
     internal async Task<ProcessResult> CompleteAsync()
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-        try { await _process.WaitForExitAsync(timeout.Token); }
+        try
+        {
+            await _process.WaitForExitAsync(timeout.Token);
+        }
         catch (OperationCanceledException)
         {
-            if (!_process.HasExited) _process.Kill(entireProcessTree: true);
+            if (!_process.HasExited)
+                _process.Kill(entireProcessTree: true);
             await _process.WaitForExitAsync();
             throw new TimeoutException("The compatibility process did not finish within 60 seconds.");
         }
@@ -133,7 +149,8 @@ internal sealed class ChildProcess : IAsyncDisposable
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        if (!_process.HasExited) _process.Kill(entireProcessTree: true);
+        if (!_process.HasExited)
+            _process.Kill(entireProcessTree: true);
         await _process.WaitForExitAsync();
         await Task.WhenAll(_output, _error);
         _process.Dispose();

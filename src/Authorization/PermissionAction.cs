@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Describes a catalog action and its optional display label.</summary>
 public sealed class PermissionAction

@@ -1,6 +1,6 @@
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using Basilisque.Base.Auth.Client;
 using Basilisque.Base.Auth.Client.Credentials;
-using Basilisque.Base.Auth.ClientAuth;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Net.Http.Headers;

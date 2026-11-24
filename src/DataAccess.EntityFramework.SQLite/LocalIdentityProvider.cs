@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
+﻿using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 using Basilisque.DependencyInjection.Registration.Annotations;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,4 @@
-﻿using Basilisque.Base.Auth.ClientAuth;
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 

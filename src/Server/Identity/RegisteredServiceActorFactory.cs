@@ -1,4 +1,4 @@
-﻿using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 using Basilisque.Base.Auth.Server.ClientAuth;
 using OpenIddict.Abstractions;
 using System.Security.Claims;

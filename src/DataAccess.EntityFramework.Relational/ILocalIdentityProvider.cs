@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 

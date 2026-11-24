@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Client.ClientAuth;
+﻿namespace Basilisque.Base.Auth.Client.ClientAuth;
 
 internal sealed class FixedMachineClientName
 {

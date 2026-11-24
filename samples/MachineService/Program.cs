@@ -1,6 +1,6 @@
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
-using Basilisque.Base.Auth.Identity;
 using Basilisque.Base.Auth.Server.ClientAuth;
 using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.Base.Auth.Server.Identity;
@@ -13,9 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 
 namespace Basilisque.Base.Auth.MachineService;
@@ -36,7 +36,9 @@ internal static class Program
         }, options =>
         {
             if (builder.Environment.IsDevelopment())
-                options.AddDevelopmentSigningCertificate().AddDevelopmentEncryptionCertificate();
+            {
+                _ = options.AddDevelopmentSigningCertificate().AddDevelopmentEncryptionCertificate();
+            }
             else
             {
                 // Mounted files work on Windows/Linux/Docker. Supply passwords through deployment secrets.
@@ -68,7 +70,8 @@ internal static class Program
             return;
         var operationNames = new[] { "register-client", "replace-client-keys", "disable-client" };
         var selectedOperations = operationNames.Where(name => !string.IsNullOrWhiteSpace(builder.Configuration[name])).ToArray();
-        if (selectedOperations.Length > 1) throw new InvalidOperationException(Messages.OneClientAdministrationOperation);
+        if (selectedOperations.Length > 1)
+            throw new InvalidOperationException(Messages.OneClientAdministrationOperation);
         if (selectedOperations.Length == 1)
         {
             var operation = selectedOperations[0];
@@ -76,12 +79,17 @@ internal static class Program
             await using var scope = app.Services.CreateAsyncScope();
             var registry = scope.ServiceProvider.GetRequiredService<IMachineClientRegistry>();
             if (operation == "disable-client")
+            {
                 await registry.DisableAsync(clientId);
+            }
             else
             {
                 var publicKeysPath = builder.Configuration["public-jwks"] ?? throw new InvalidOperationException(Messages.PublicJwksRequired);
                 var publicKeys = new JsonWebKeySet(await File.ReadAllTextAsync(publicKeysPath));
-                if (operation == "replace-client-keys") await registry.ReplacePublicKeysAsync(clientId, publicKeys);
+                if (operation == "replace-client-keys")
+                {
+                    await registry.ReplacePublicKeysAsync(clientId, publicKeys);
+                }
                 else
                 {
                     var contextId = builder.Configuration["context"];

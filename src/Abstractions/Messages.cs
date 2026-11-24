@@ -1,7 +1,7 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Resources;
 
-namespace Basilisque.Base.Auth;
+namespace Basilisque.Base.Auth.Abstractions;
 
 internal static class Messages
 {

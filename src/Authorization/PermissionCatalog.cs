@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Contains the permission actions, object types, and nodes available to the application.</summary>
 public sealed class PermissionCatalog

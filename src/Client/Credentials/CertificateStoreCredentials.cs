@@ -37,7 +37,9 @@ public static class CertificateStoreCredentials
 
             if (selected is null || DateTime.UtcNow < selected.NotBefore.ToUniversalTime() ||
                 DateTime.UtcNow >= selected.NotAfter.ToUniversalTime())
+            {
                 throw new CryptographicException(Messages.NoValidSigningCertificate);
+            }
 
             var result = ClientSigningCredential.FromCertificate(selected, ownsCertificate: true);
             retained = selected; // Ownership transfers to the returned wrapper.
@@ -46,8 +48,10 @@ public static class CertificateStoreCredentials
         finally
         {
             foreach (var certificate in certificates)
+            {
                 if (!ReferenceEquals(certificate, retained))
                     certificate.Dispose();
+            }
         }
     }
 }

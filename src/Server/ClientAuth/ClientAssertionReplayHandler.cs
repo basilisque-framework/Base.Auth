@@ -1,6 +1,6 @@
-﻿using OpenIddict.Abstractions;
+﻿using Microsoft.Extensions.Localization;
+using OpenIddict.Abstractions;
 using OpenIddict.Server;
-using Microsoft.Extensions.Localization;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Basilisque.Base.Auth.Server.ClientAuth;

@@ -1,13 +1,13 @@
-using Basilisque.Base.Auth.ClientAuth;
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using Basilisque.Base.Auth.Client.Credentials;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Basilisque.Base.Auth.Server.Integration.Tests;
 
@@ -141,8 +141,15 @@ public sealed class MachineAuthenticationTests
         // Act
         var responses = await Task.WhenAll(environment.ExchangeAsync(assertion), environment.ExchangeAsync(assertion));
         // Assert
-        try { await Assert.That(responses.Count(response => response.IsSuccessStatusCode)).IsEqualTo(1); }
-        finally { foreach (var response in responses) response.Dispose(); }
+        try
+        {
+            await Assert.That(responses.Count(response => response.IsSuccessStatusCode)).IsEqualTo(1);
+        }
+        finally
+        {
+            foreach (var response in responses)
+                response.Dispose();
+        }
     }
 
     /// <summary>Prevents new tokens for disabled registrations.</summary>

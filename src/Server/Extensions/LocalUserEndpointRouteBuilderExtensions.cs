@@ -1,4 +1,4 @@
-﻿using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 using Basilisque.Base.Auth.Server.Configuration;
 using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore;
@@ -129,7 +129,9 @@ public static class LocalUserEndpointRouteBuilderExtensions
         if (!authentication.Succeeded || principal is null || principal.GetClaim(BaseAuthClaims.ActorKind) != BaseAuthClaims.User ||
             principal.GetClaim(Claims.Subject) is not { } subject ||
             principal.GetClaim(LocalAccountIdClaim) is not { } accountId)
+        {
             return protocolError(Errors.InvalidGrant, localizer, AuthProtocolMessages.InvalidAuthorizationCode);
+        }
 
         var user = await signIn.UserManager.FindByIdAsync(accountId);
         var actor = user is not null && await signIn.CanSignInAsync(user)
@@ -139,7 +141,9 @@ public static class LocalUserEndpointRouteBuilderExtensions
         if (actor is null || user is null || actor.SubjectId != subject ||
             actor.ContextId != principal.GetClaim(BaseAuthClaims.ContextId) ||
             principal.GetClaim(SecurityStampClaim) != await signIn.UserManager.GetSecurityStampAsync(user))
+        {
             return protocolError(Errors.InvalidGrant, localizer, AuthProtocolMessages.AccountNoLongerAuthorized);
+        }
 
         return Results.SignIn(principal, authenticationScheme: ProtocolScheme);
     }

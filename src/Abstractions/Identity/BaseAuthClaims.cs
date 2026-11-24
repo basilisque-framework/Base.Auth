@@ -1,4 +1,4 @@
-﻿namespace Basilisque.Base.Auth.Identity;
+﻿namespace Basilisque.Base.Auth.Abstractions.Identity;
 
 /// <summary>
 /// Defines the claim contract at the product authentication boundary.

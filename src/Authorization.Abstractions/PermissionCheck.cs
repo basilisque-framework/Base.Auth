@@ -1,6 +1,6 @@
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
-namespace Basilisque.Base.Auth.Authorization;
+namespace Basilisque.Base.Auth.Authorization.Abstractions;
 
 /// <summary>Identifies a business action and the scopes applicable to the target resource.</summary>
 public sealed class PermissionCheck

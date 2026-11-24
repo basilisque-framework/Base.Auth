@@ -1,7 +1,8 @@
-﻿namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
-
+﻿
 using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 
 /// <summary>
 /// Includes the Basilisque relational infrastructure in generated dependency registration.

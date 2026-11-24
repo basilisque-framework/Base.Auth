@@ -1,6 +1,6 @@
-using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 
-namespace Basilisque.Base.Auth.Authorization;
+namespace Basilisque.Base.Auth.Authorization.Abstractions;
 
 /// <summary>Evaluates business permissions for an authenticated product actor.</summary>
 public interface IPermissionEvaluator

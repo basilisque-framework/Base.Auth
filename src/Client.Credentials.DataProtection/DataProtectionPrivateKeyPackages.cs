@@ -150,16 +150,24 @@ public sealed class DataProtectionPrivateKeyPackages : IPrivateKeyPackageProtect
             using var key = CngKey.Import(material, CngKeyBlobFormat.Pkcs8PrivateBlob);
             return new RSACng(key);
         }
-        finally { clear(material); }
+        finally
+        {
+            clear(material);
+        }
 #else
         var key = RSA.Create();
         try
         {
             key.ImportPkcs8PrivateKey(plaintext.AsSpan(offset, length), out var bytesRead);
-            if (bytesRead != length) throw new CryptographicException(Messages.InvalidPrivateKeyPackage);
+            if (bytesRead != length)
+                throw new CryptographicException(Messages.InvalidPrivateKeyPackage);
             return key;
         }
-        catch { key.Dispose(); throw; }
+        catch
+        {
+            key.Dispose();
+            throw;
+        }
 #endif
     }
 

@@ -1,6 +1,6 @@
-﻿using Basilisque.Base.Auth.ClientAuth;
-using OpenIddict.Client;
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using Microsoft.Extensions.DependencyInjection;
+using OpenIddict.Client;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static OpenIddict.Abstractions.OpenIddictExceptions;
 using static OpenIddict.Client.OpenIddictClientEvents;

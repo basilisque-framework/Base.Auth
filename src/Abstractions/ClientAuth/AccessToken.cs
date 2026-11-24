@@ -1,4 +1,4 @@
-﻿namespace Basilisque.Base.Auth.ClientAuth;
+﻿namespace Basilisque.Base.Auth.Abstractions.ClientAuth;
 
 /// <summary>
 /// An opaque bearer token and its server-reported expiration date.

@@ -18,7 +18,7 @@ public sealed class MachineClientOptions
     /// <summary>
     /// Gets the API scopes requested by this registration.
     /// </summary>
-    public ICollection<string> Scopes { get; } = new List<string>();
+    public ICollection<string> Scopes { get; } = [];
 
     /// <summary>
     /// Gets or sets whether valid access tokens are reused. Defaults to true; disable when the caller manages token caching.

@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Server.Identity;
+﻿using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

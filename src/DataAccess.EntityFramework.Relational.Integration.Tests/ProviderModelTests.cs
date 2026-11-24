@@ -1,6 +1,6 @@
+﻿using Basilisque.Base.Auth.Authorization.EntityFramework;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.Base.Auth.Server.ClientAuth;
-using Basilisque.Base.Auth.Authorization.EntityFramework;
 using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.EntityFrameworkCore;
@@ -304,13 +304,24 @@ public sealed class ProviderModelTests
             Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.IServiceCollectionExtensions.RegisterServices(services);
             Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.IServiceCollectionExtensions.RegisterServices(services);
         }
-        else switch (providerName)
+        else
         {
-            case "SQLite": Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.IServiceCollectionExtensions.RegisterServices(services); break;
-            case "PostgreSQL": Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.IServiceCollectionExtensions.RegisterServices(services); break;
-            case "SqlServer": Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.IServiceCollectionExtensions.RegisterServices(services); break;
-            default: throw new ArgumentException("Unsupported provider.");
+            switch (providerName)
+            {
+                case "SQLite":
+                    Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.IServiceCollectionExtensions.RegisterServices(services);
+                    break;
+                case "PostgreSQL":
+                    Basilisque.Base.Auth.DataAccess.EntityFramework.PostgreSQL.IServiceCollectionExtensions.RegisterServices(services);
+                    break;
+                case "SqlServer":
+                    Basilisque.Base.Auth.DataAccess.EntityFramework.SqlServer.IServiceCollectionExtensions.RegisterServices(services);
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported provider.");
+            }
         }
+
         services.AddBaseAuthRelationalPersistence();
         if (permissions)
             services.AddBaseAuthRelationalAuthorization();

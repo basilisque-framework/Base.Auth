@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 using System.Globalization;
 
 namespace Basilisque.Base.Auth.Abstractions.Unit.Tests.Identity;

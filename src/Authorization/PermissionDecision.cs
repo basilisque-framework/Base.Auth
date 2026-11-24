@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Contains a permission decision and the explicit rules that applied.</summary>
 public sealed class PermissionDecision

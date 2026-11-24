@@ -1,5 +1,5 @@
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using Basilisque.Base.Auth.Client.ClientAuth;
-using Basilisque.Base.Auth.ClientAuth;
 using Microsoft.Extensions.Options;
 
 namespace Basilisque.Base.Auth.Client.Unit.Tests.ClientAuth;
@@ -26,7 +26,11 @@ public sealed class CachedAccessTokenProviderTests : IDisposable
     {
         // Arrange
         _endpoint.RequestAsync("test", Arg.Any<CancellationToken>())
-            .Returns(async _ => { await Task.Delay(20); return new AccessToken("token", DateTimeOffset.UtcNow.AddMinutes(5)); });
+            .Returns(async _ =>
+            {
+                await Task.Delay(20);
+                return new AccessToken("token", DateTimeOffset.UtcNow.AddMinutes(5));
+            });
         // Act
         var tokens = await Task.WhenAll(Enumerable.Range(0, 20).Select(_ => _provider.GetAccessTokenAsync("test")));
         // Assert
@@ -70,7 +74,11 @@ public sealed class CachedAccessTokenProviderTests : IDisposable
         _endpoint.RequestAsync("test", Arg.Any<CancellationToken>()).Returns(
             Task.FromException<AccessToken>(new InvalidOperationException("unavailable")),
             Task.FromResult(new AccessToken("recovered", DateTimeOffset.UtcNow.AddMinutes(5))));
-        try { await _provider.GetAccessTokenAsync("test"); } catch (InvalidOperationException) { }
+        try
+        {
+            await _provider.GetAccessTokenAsync("test");
+        }
+        catch (InvalidOperationException) { }
         // Act
         var token = await _provider.GetAccessTokenAsync("test");
         // Assert

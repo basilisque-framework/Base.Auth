@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Client.Credentials.DataProtection;
+﻿using Basilisque.Base.Auth.Client.Credentials.DataProtection;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography;
 

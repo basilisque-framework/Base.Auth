@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization.EntityFramework;
+﻿namespace Basilisque.Base.Auth.Authorization.EntityFramework;
 
 internal sealed class StoredObjectType : IStoredCatalogEntry
 {

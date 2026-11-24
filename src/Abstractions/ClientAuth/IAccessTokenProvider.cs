@@ -1,4 +1,4 @@
-﻿namespace Basilisque.Base.Auth.ClientAuth;
+﻿namespace Basilisque.Base.Auth.Abstractions.ClientAuth;
 
 /// <summary>
 /// Obtains access tokens for explicitly configured technical clients.

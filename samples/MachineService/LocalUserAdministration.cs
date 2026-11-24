@@ -1,5 +1,5 @@
+﻿using Basilisque.Base.Auth.Server.Configuration;
 using Basilisque.Base.Auth.Server.Identity;
-using Basilisque.Base.Auth.Server.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +19,9 @@ internal static class LocalUserAdministration
             return false;
         if (selected.Length != 1 || new[] { "register-client", "replace-client-keys", "disable-client" }
             .Any(name => !string.IsNullOrWhiteSpace(configuration[name])))
+        {
             throw new InvalidOperationException(Messages.OneAdministrationOperation);
+        }
 
         var operation = selected[0];
         var identifier = configuration[operation]!;
@@ -60,7 +62,10 @@ internal static class LocalUserAdministration
         if (!Uri.TryCreate(redirect, UriKind.Absolute, out var redirectUri) ||
             (redirectUri.Scheme != Uri.UriSchemeHttps && !(redirectUri.IsLoopback && redirectUri.Scheme == Uri.UriSchemeHttp)) ||
             !string.IsNullOrEmpty(redirectUri.Fragment) || !string.IsNullOrEmpty(redirectUri.UserInfo))
+        {
             throw new InvalidOperationException(Messages.InvalidRedirectUri);
+        }
+
         var client = new OpenIddictApplicationDescriptor
         {
             ClientId = clientId,

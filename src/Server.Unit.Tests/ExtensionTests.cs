@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Server.Extensions;
+﻿using Basilisque.Base.Auth.Server.Extensions;
 using Basilisque.Base.Auth.Server.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +16,11 @@ public sealed class ExtensionTests
         var mapper = Substitute.For<IServiceActorFactory>();
         var services = new ServiceCollection();
         services.AddSingleton(mapper);
-        services.AddBaseAuthServer(options => { options.Issuer = new Uri("https://issuer.example/"); options.Audience = "api"; },
+        services.AddBaseAuthServer(options =>
+        {
+            options.Issuer = new Uri("https://issuer.example/");
+            options.Audience = "api";
+        },
             options => options.AddEphemeralSigningKey().AddEphemeralEncryptionKey());
         using var provider = services.BuildServiceProvider();
         // Act

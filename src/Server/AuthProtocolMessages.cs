@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Server;
+﻿namespace Basilisque.Base.Auth.Server;
 
 /// <summary>Identifies the localizer and stable keys for Base.Auth protocol error descriptions.</summary>
 public sealed class AuthProtocolMessages

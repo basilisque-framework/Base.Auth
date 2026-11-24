@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Assigns a role to an actor within one application-defined scope.</summary>
 public sealed class RoleAssignment

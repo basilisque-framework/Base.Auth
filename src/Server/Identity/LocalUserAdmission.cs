@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 
 namespace Basilisque.Base.Auth.Server.Identity;
 

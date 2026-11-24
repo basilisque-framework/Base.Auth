@@ -1,6 +1,6 @@
-using Basilisque.Base.Auth.ClientAuth;
-using System.Threading;
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
 using OpenIddict.Client;
+using System.Threading;
 
 namespace Basilisque.Base.Auth.Client.ClientAuth;
 

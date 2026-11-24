@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Basilisque.Base.Auth.Authorization.EntityFramework;
 
@@ -25,8 +25,11 @@ internal sealed class EfPermissionManagement : IPermissionManagement
         {
             var type = new StoredObjectType
             {
-                Id = Guid.CreateVersion7(), Key = objectType.Id, DisplayName = normalizeDisplayName(objectType.DisplayName),
-                SourceKey = objectType.SourceKey, Hidden = objectType.Hidden
+                Id = Guid.CreateVersion7(),
+                Key = objectType.Id,
+                DisplayName = normalizeDisplayName(objectType.DisplayName),
+                SourceKey = objectType.SourceKey,
+                Hidden = objectType.Hidden
             };
             await addMissingActions(database, type, objectType.ActionIds, cancellationToken);
 
@@ -53,7 +56,9 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             var removed = type.Actions.Where(action => !desired.Contains(action.Key)).Select(action => action.Id).ToArray();
             if (removed.Length > 0 && await database.Rules.AnyAsync(
                 rule => rule.Object.TypeId == type.Id && removed.Contains(rule.ActionId), cancellationToken))
+            {
                 throw new InvalidOperationException(Messages.RemoveRulesBeforeDetachingActions);
+            }
 
             type.Actions.RemoveAll(action => !desired.Contains(action.Key));
             await addMissingActions(database, type, desired, cancellationToken);
@@ -101,9 +106,13 @@ internal sealed class EfPermissionManagement : IPermissionManagement
 
             database.Objects.Add(new StoredObject
             {
-                Id = Guid.CreateVersion7(), Key = permissionObject.Id, TypeId = type.Id, ParentId = parent?.Id,
+                Id = Guid.CreateVersion7(),
+                Key = permissionObject.Id,
+                TypeId = type.Id,
+                ParentId = parent?.Id,
                 DisplayName = normalizeDisplayName(permissionObject.DisplayName),
-                SourceKey = permissionObject.SourceKey, Hidden = permissionObject.Hidden
+                SourceKey = permissionObject.SourceKey,
+                Hidden = permissionObject.Hidden
             });
             return await database.SaveChangesAsync(cancellationToken);
         }, cancellationToken);
@@ -293,12 +302,19 @@ internal sealed class EfPermissionManagement : IPermissionManagement
             foreach (var (key, effect) in resolved)
             {
                 if (existing.TryGetValue(key, out var storedRule))
+                {
                     storedRule.Effect = effect;
+                }
                 else
+                {
                     storedRole.Rules.Add(new StoredRule
                     {
-                        RoleId = storedRole.Id, ObjectId = key.ObjectId, ActionId = key.ActionId, Effect = effect
+                        RoleId = storedRole.Id,
+                        ObjectId = key.ObjectId,
+                        ActionId = key.ActionId,
+                        Effect = effect
                     });
+                }
             }
 
             return await database.SaveChangesAsync(cancellationToken);
@@ -348,9 +364,13 @@ internal sealed class EfPermissionManagement : IPermissionManagement
 
             database.Assignments.Add(new StoredAssignment
             {
-                Id = assignmentId, RoleId = role.Id, ActorKind = assignment.ActorKind,
-                SubjectId = assignment.SubjectId, ScopeId = assignment.ScopeId,
-                ValidFromUtc = assignment.ValidFrom?.UtcDateTime, ValidUntilUtc = assignment.ValidUntil?.UtcDateTime
+                Id = assignmentId,
+                RoleId = role.Id,
+                ActorKind = assignment.ActorKind,
+                SubjectId = assignment.SubjectId,
+                ScopeId = assignment.ScopeId,
+                ValidFromUtc = assignment.ValidFrom?.UtcDateTime,
+                ValidUntilUtc = assignment.ValidUntil?.UtcDateTime
             });
             await database.SaveChangesAsync(cancellationToken);
             return assignmentId;

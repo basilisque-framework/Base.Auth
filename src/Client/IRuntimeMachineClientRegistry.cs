@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.Client.Credentials;
+﻿using Basilisque.Base.Auth.Client.Credentials;
 
 namespace Basilisque.Base.Auth.Client;
 

@@ -1,4 +1,4 @@
-﻿using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
 using Basilisque.Base.Auth.Server.ClientAuth;
 using Basilisque.Base.Auth.Server.Configuration;
 using Basilisque.Base.Auth.Server.Identity;
@@ -111,7 +111,12 @@ public static class ServiceCollectionExtensions
             .RequireAssertion(context =>
             {
                 try
-                { return context.User.GetBaseAuthActor().Kind == actorKind; }
-                catch (InvalidOperationException) { return false; }
+                {
+                    return context.User.GetBaseAuthActor().Kind == actorKind;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
             }));
 }

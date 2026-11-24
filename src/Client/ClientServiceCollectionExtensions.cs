@@ -1,6 +1,6 @@
-﻿using Basilisque.Base.Auth.Client.ClientAuth;
+﻿using Basilisque.Base.Auth.Abstractions.ClientAuth;
+using Basilisque.Base.Auth.Client.ClientAuth;
 using Basilisque.Base.Auth.Client.Credentials;
-using Basilisque.Base.Auth.ClientAuth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -54,7 +54,9 @@ public static class ClientServiceCollectionExtensions
 
             if (services.Any(descriptor => descriptor.ServiceType == typeof(ClientSigningCredential) &&
                 Equals(descriptor.ServiceKey, registrationName)))
+            {
                 throw new InvalidOperationException(Messages.MachineClientRegistrationExists);
+            }
 
             services.AddOptions<MachineClientOptions>(registrationName).Configure(configure);
             services.AddSingleton<IValidateOptions<MachineClientOptions>>(new MachineClientOptionsValidator(registrationName));

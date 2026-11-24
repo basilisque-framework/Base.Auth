@@ -1,4 +1,4 @@
-using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
+﻿using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.DataAccess.EntityFramework.Base.Design;
 using Microsoft.Extensions.Configuration;

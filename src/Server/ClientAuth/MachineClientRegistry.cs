@@ -88,13 +88,22 @@ internal sealed class MachineClientRegistry : IMachineClientRegistry
                 !string.IsNullOrEmpty(key.QI) || !string.IsNullOrEmpty(key.K) ||
                 key.Kty != JsonWebAlgorithmsKeyTypes.RSA && key.Kty != JsonWebAlgorithmsKeyTypes.EllipticCurve ||
                 string.IsNullOrWhiteSpace(key.Kid) || !identifiers.Add(key.Kid))
+            {
                 throw new ArgumentException(Messages.InvalidPublicKeys, nameof(publicKeys));
+            }
+
             if (key.Kty == JsonWebAlgorithmsKeyTypes.RSA &&
                 (string.IsNullOrEmpty(key.N) || string.IsNullOrEmpty(key.E) || Base64UrlEncoder.DecodeBytes(key.N).Length < 256))
+            {
                 throw new ArgumentException(Messages.RsaPublicKeyTooShort, nameof(publicKeys));
+            }
+
             if (key.Kty == JsonWebAlgorithmsKeyTypes.EllipticCurve &&
                 (key.Crv is not ("P-256" or "P-384" or "P-521") || string.IsNullOrEmpty(key.X) || string.IsNullOrEmpty(key.Y)))
+            {
                 throw new ArgumentException(Messages.UnsupportedEcPublicKey, nameof(publicKeys));
+            }
+
             if (key.Kty == JsonWebAlgorithmsKeyTypes.RSA)
             {
                 using var rsa = RSA.Create();

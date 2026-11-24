@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Resources;
 
 namespace Basilisque.Base.Auth.Client.Credentials.DataProtection;

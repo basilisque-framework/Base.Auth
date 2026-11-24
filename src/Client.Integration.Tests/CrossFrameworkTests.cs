@@ -1,12 +1,12 @@
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using TUnit.Core.Enums;
 
@@ -52,7 +52,8 @@ public sealed class CrossFrameworkTests
         var serverFramework = CompatibilityEnvironment.CurrentFramework;
         var clientFramework = useNetFrameworkClient ? "net48" : serverFramework;
         var check = await environment.RunDotnetAsync("dev-certs", "https", "--check", "--trust");
-        if (check.ExitCode != 0) throw new InvalidOperationException("A trusted HTTPS development certificate is required. The tests do not install certificates or bypass TLS validation.");
+        if (check.ExitCode != 0)
+            throw new InvalidOperationException("A trusted HTTPS development certificate is required. The tests do not install certificates or bypass TLS validation.");
         using var rsa = RSA.Create(2048);
         var request = new CertificateRequest("CN=Compatibility Client", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         using var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddDays(1));
@@ -139,7 +140,9 @@ public sealed class CrossFrameworkTests
             throw new InvalidOperationException("The Identity login form did not render an antiforgery token.");
         using var login = await browser.PostAsync(loginLocation, new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["Input.Email"] = Email, ["Input.Password"] = password, ["__RequestVerificationToken"] = token
+            ["Input.Email"] = Email,
+            ["Input.Password"] = password,
+            ["__RequestVerificationToken"] = token
         }));
         var authorizationLocation = login.Headers.Location ?? throw new InvalidOperationException("Login did not return to authorization.");
         using var authorization = await browser.GetAsync(authorizationLocation);
@@ -147,8 +150,11 @@ public sealed class CrossFrameworkTests
         var code = callback.Query.TrimStart('?').Split('&').Single(value => value.StartsWith("code=", StringComparison.Ordinal))[5..];
         using var exchange = await browser.PostAsync("connect/token", new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["grant_type"] = "authorization_code", ["client_id"] = ClientId, ["redirect_uri"] = Redirect,
-            ["code"] = Uri.UnescapeDataString(code), ["code_verifier"] = verifier
+            ["grant_type"] = "authorization_code",
+            ["client_id"] = ClientId,
+            ["redirect_uri"] = Redirect,
+            ["code"] = Uri.UnescapeDataString(code),
+            ["code_verifier"] = verifier
         }));
         exchange.EnsureSuccessStatusCode();
         using var tokens = JsonDocument.Parse(await exchange.Content.ReadAsStringAsync());
@@ -176,11 +182,13 @@ public sealed class CrossFrameworkTests
             try
             {
                 using var response = await http.GetAsync(authority + ".well-known/openid-configuration", timeout.Token);
-                if (response.IsSuccessStatusCode) return;
+                if (response.IsSuccessStatusCode)
+                    return;
             }
             catch (HttpRequestException) { }
             catch (OperationCanceledException) { }
-            if (!timeout.IsCancellationRequested) await Task.Delay(100, timeout.Token);
+            if (!timeout.IsCancellationRequested)
+                await Task.Delay(100, timeout.Token);
         }
         throw new TimeoutException("The HTTPS service did not become ready within 30 seconds.");
     }

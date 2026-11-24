@@ -1,6 +1,7 @@
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
+using Basilisque.Base.Auth.Authorization.Abstractions;
 using Basilisque.Base.Auth.Authorization.EntityFramework;
 using Basilisque.Base.Auth.DataAccess.EntityFramework.Relational;
-using Basilisque.Base.Auth.Identity;
 using Basilisque.DataAccess.EntityFramework.Base.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -343,7 +344,7 @@ public sealed class PermissionPersistenceTests
         await management.SaveRole(new PermissionRole("reader", [new("payroll", Execute, PermissionEffect.Deny)]));
 
         // Act
-        Func<Task> update = () => management.SetObjectTypeActions("folder", []);
+        Task update() => management.SetObjectTypeActions("folder", []);
 
         // Assert
         await Assert.That(update).Throws<InvalidOperationException>();
@@ -384,7 +385,7 @@ public sealed class PermissionPersistenceTests
         using var scope = services.CreateScope();
 
         // Act
-        Action resolve = () => scope.ServiceProvider.GetRequiredService<IPermissionDiagnostics>();
+        void resolve() => scope.ServiceProvider.GetRequiredService<IPermissionDiagnostics>();
 
         // Assert
         await Assert.That(resolve).Throws<InvalidOperationException>();

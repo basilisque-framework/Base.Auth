@@ -1,6 +1,6 @@
 ﻿using Basilisque.DataAccess.EntityFramework.Base.DependencyInjection;
-using Basilisque.DataAccess.EntityFramework.Relational.Model;
 using Basilisque.DataAccess.EntityFramework.Base.Stamping;
+using Basilisque.DataAccess.EntityFramework.Relational.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

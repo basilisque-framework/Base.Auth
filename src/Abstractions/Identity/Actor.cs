@@ -1,4 +1,4 @@
-﻿namespace Basilisque.Base.Auth.Identity;
+﻿namespace Basilisque.Base.Auth.Abstractions.Identity;
 
 /// <summary>
 /// A product identity independent of the authentication protocol or provider.

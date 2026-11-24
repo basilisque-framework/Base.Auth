@@ -1,4 +1,5 @@
-using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
+using Basilisque.Base.Auth.Authorization.Abstractions;
 
 namespace Basilisque.Base.Auth.Authorization.Unit.Tests;
 
@@ -154,7 +155,7 @@ public sealed class PermissionRuleEvaluatorTests
         PermissionObject[] objects = [new("first", "folder", "second"), new("second", "folder", "first")];
 
         // Act
-        Action create = () => new PermissionRuleEvaluator([new("folder", [Execute])], objects, [], []);
+        void create() => new PermissionRuleEvaluator([new("folder", [Execute])], objects, [], []);
 
         // Assert
         await Assert.That(create).Throws<ArgumentException>();

@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Defines the effect of an explicit role permission rule.</summary>
 public enum PermissionEffect

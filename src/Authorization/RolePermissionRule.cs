@@ -1,4 +1,4 @@
-namespace Basilisque.Base.Auth.Authorization;
+﻿namespace Basilisque.Base.Auth.Authorization;
 
 /// <summary>Defines an explicit rule in a permission role.</summary>
 public sealed class RolePermissionRule

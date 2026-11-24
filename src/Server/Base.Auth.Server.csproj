@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Basilisque.Base.Auth.Server</PackageId>
     <TargetFramework>$(BAS_Auth_TargetFramework)</TargetFramework>

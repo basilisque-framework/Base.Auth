@@ -1,4 +1,5 @@
-﻿using Basilisque.DataAccess.EntityFramework.Base.DependencyInjection;
+﻿using Basilisque.Base.Auth.Authorization.Abstractions;
+using Basilisque.DataAccess.EntityFramework.Base.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

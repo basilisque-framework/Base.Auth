@@ -43,8 +43,15 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
     {
         var environment = new ProtocolTestEnvironment();
         try
-        { await environment.initializeAsync(localUsers, machineContextId, configureServices); return environment; }
-        catch { await environment.DisposeAsync(); throw; }
+        {
+            await environment.initializeAsync(localUsers, machineContextId, configureServices);
+            return environment;
+        }
+        catch
+        {
+            await environment.DisposeAsync();
+            throw;
+        }
     }
 
     private async Task initializeAsync(bool localUsers, string? machineContextId, Action<IServiceCollection>? configureServices)
@@ -60,7 +67,11 @@ internal sealed class ProtocolTestEnvironment : IAsyncDisposable
         });
         Basilisque.Base.Auth.DataAccess.EntityFramework.SQLite.IServiceCollectionExtensions.RegisterServices(builder.Services);
         builder.Services.AddBaseAuthRelationalPersistence();
-        builder.Services.AddBaseAuthServer(options => { options.Issuer = Issuer; options.Audience = Audience; },
+        builder.Services.AddBaseAuthServer(options =>
+        {
+            options.Issuer = Issuer;
+            options.Audience = Audience;
+        },
             options => options.AddSigningKey(new RsaSecurityKey(_serverKey) { KeyId = "server-key" }).AddEphemeralEncryptionKey());
         builder.Services.AddBaseAuthLocalApi(Audience);
         if (localUsers)

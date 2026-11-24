@@ -1,4 +1,5 @@
-using Basilisque.Base.Auth.Identity;
+﻿using Basilisque.Base.Auth.Abstractions.Identity;
+using Basilisque.Base.Auth.Authorization.Abstractions;
 
 namespace Basilisque.Base.Auth.Authorization;
 
@@ -103,7 +104,9 @@ internal sealed class PermissionRuleEvaluator
                         objectId != target.Id, ruleScopes));
                 }
                 else if (rule.Effect == PermissionEffect.Deny)
+                {
                     return false;
+                }
 
                 allowed |= rule.Effect == PermissionEffect.Allow;
                 denied |= rule.Effect == PermissionEffect.Deny;
